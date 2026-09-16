@@ -1,14 +1,16 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- iPhone / Home-Bildschirm -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Abend-Check-in">
+    <meta name="apple-mobile-web-app-title" content="Meine Routine">
 
-    <title>Abend-Check-in</title>
+    <title>Meine Routine</title>
 
     <style>
         * {
@@ -18,8 +20,16 @@
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                         Roboto, Helvetica, Arial, sans-serif;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
             background: #f5f3ef;
             color: #252525;
 
@@ -36,22 +46,44 @@
             text-align: center;
         }
 
-        .moon {
-            font-size: 42px;
-            margin-bottom: 24px;
+        .screen {
+            display: none;
         }
 
-        .subtitle {
-            font-size: 14px;
+        .screen.active {
+            display: block;
+        }
+
+        .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .small-title {
+            font-size: 13px;
             color: #888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             margin-bottom: 10px;
-            letter-spacing: 0.5px;
         }
 
         h1 {
-            font-size: 30px;
+            font-size: 31px;
             font-weight: 600;
-            margin: 0 0 42px;
+            margin: 0 0 15px;
+        }
+
+        h2 {
+            font-size: 25px;
+            font-weight: 600;
+            margin: 0 0 25px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 35px;
         }
 
         .question {
@@ -71,7 +103,8 @@
             width: 100%;
             border: none;
             border-radius: 16px;
-            padding: 17px 20px;
+
+            padding: 18px 20px;
 
             font-size: 17px;
             font-weight: 500;
@@ -83,8 +116,9 @@
 
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 
-            transition: transform 0.15s ease,
-                        box-shadow 0.15s ease;
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease;
         }
 
         button:hover {
@@ -94,6 +128,30 @@
 
         button:active {
             transform: scale(0.98);
+        }
+
+        .morning-button {
+            background: #fff4d9;
+        }
+
+        .evening-button {
+            background: #e9e5f7;
+        }
+
+        .level1 {
+            background: #f3dfdf;
+        }
+
+        .level2 {
+            background: #f8ead4;
+        }
+
+        .level3 {
+            background: #e5f0e7;
+        }
+
+        .level4 {
+            background: #dcecf4;
         }
 
         .yes {
@@ -108,304 +166,838 @@
             background: #f3dfdf;
         }
 
-        .counter {
-            margin-top: 45px;
-            font-size: 15px;
-            color: #777;
-        }
-
-        .counter strong {
-            color: #333;
-        }
-
-        .result {
-            display: none;
-        }
-
-        .result-icon {
-            font-size: 52px;
-            margin-bottom: 18px;
-        }
-
-        .result h2 {
-            font-size: 26px;
-            margin: 0 0 12px;
-        }
-
-        .result p {
-            color: #777;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-
-        .answer {
+        .notebook {
             margin-top: 25px;
-            display: inline-block;
-            padding: 10px 16px;
+            padding: 22px;
+
             background: white;
-            border-radius: 12px;
-            font-size: 15px;
+            border-radius: 18px;
+
+            line-height: 1.5;
+            color: #555;
+
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
         }
 
-        .reset {
-            margin-top: 35px;
+        .notebook strong {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .success {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .success-text {
+            font-size: 17px;
+            color: #777;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .routine-counter {
+            margin-top: 40px;
+            padding: 18px;
+
+            background: white;
+            border-radius: 18px;
+
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .counter-number {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .counter-label {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .back-button {
+            margin-top: 25px;
             background: transparent;
             box-shadow: none;
-            color: #999;
-            font-size: 13px;
+            color: #888;
+            font-size: 14px;
         }
 
-        .reset:hover {
+        .back-button:hover {
             box-shadow: none;
-            color: #666;
+            color: #555;
+        }
+
+        .already-done {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 14px;
+            background: #e7f2e9;
+            color: #4b6850;
+            font-size: 14px;
+            line-height: 1.4;
         }
     </style>
 </head>
 
+
 <body>
 
-    <main class="app">
-
-        <!-- FRAGE -->
-        <section id="questionScreen">
-
-            <div class="moon">🌙</div>
-
-            <div class="subtitle">ABEND-CHECK-IN</div>
-
-            <h1>Guten Abend.</h1>
-
-            <div class="question">
-                Hast du heute an deinen Zielen gearbeitet?
-            </div>
-
-            <div class="buttons">
-
-                <button class="yes" onclick="saveAnswer('Ja')">
-                    ✅ Ja
-                </button>
-
-                <button class="some" onclick="saveAnswer('Ein bisschen')">
-                    🟡 Ein bisschen
-                </button>
-
-                <button class="no" onclick="saveAnswer('Nein')">
-                    ❌ Nein
-                </button>
-
-            </div>
-
-            <div class="counter">
-                🔥 <strong id="streak">0</strong> Tage
-            </div>
-
-        </section>
+<main class="app">
 
 
-        <!-- ERGEBNIS -->
-        <section id="resultScreen" class="result">
+    <!-- =====================================================
+         STARTSEITE
+         ===================================================== -->
 
-            <div class="result-icon">🌱</div>
+    <section id="homeScreen" class="screen active">
 
-            <h2>Für heute geschafft.</h2>
+        <div class="icon">🌱</div>
 
-            <p>
-                Danke, dass du dir einen Moment genommen hast.
-            </p>
+        <div class="small-title">
+            Deine tägliche Routine
+        </div>
 
-            <div class="answer">
-                Deine Antwort: <strong id="answerText"></strong>
-            </div>
+        <h1>Was steht an?</h1>
 
-            <div class="counter">
-                🔥 <strong id="resultStreak">0</strong> Tage
-            </div>
+        <p class="description">
+            Nimm dir kurz Zeit für deinen Morgen<br>
+            oder für deinen Abend.
+        </p>
 
-            <button class="reset" onclick="resetForTesting()">
-                Zurücksetzen
+        <div class="buttons">
+
+            <button
+                class="morning-button"
+                onclick="openMorning()">
+
+                🌅 Morgen Energie-Check
+
             </button>
 
-        </section>
 
-    </main>
+            <button
+                class="evening-button"
+                onclick="openEvening()">
 
+                🌙 Abend Check-in
 
-    <script>
+            </button>
 
-        /*
-         * ---------------------------------------------------------
-         * ABEND-CHECK-IN
-         * ---------------------------------------------------------
-         *
-         * Die Daten werden momentan ausschließlich im Browser
-         * gespeichert (localStorage).
-         *
-         * Es wird nichts an einen Server geschickt.
-         */
+        </div>
 
 
-        // Gibt das heutige Datum zurück.
-        function getToday() {
-            const now = new Date();
+        <div class="routine-counter">
 
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
+            <div class="counter-number" id="homeCounter">
+                0
+            </div>
 
-            return `${year}-${month}-${day}`;
-        }
+            <div class="counter-label">
+                Tage Routine abgeschlossen
+            </div>
 
+        </div>
 
-        // Gespeicherte Daten laden.
-        function getData() {
+    </section>
 
-            const saved = localStorage.getItem('abendCheckin');
 
-            if (!saved) {
-                return {
-                    answers: {},
-                    streak: 0,
-                    lastDate: null
-                };
-            }
 
-            return JSON.parse(saved);
-        }
+    <!-- =====================================================
+         MORGEN – ENERGIE CHECK
+         ===================================================== -->
 
+    <section id="morningScreen" class="screen">
 
-        // Daten speichern.
-        function saveData(data) {
+        <div class="icon">🌅</div>
 
-            localStorage.setItem(
-                'abendCheckin',
-                JSON.stringify(data)
-            );
-        }
+        <div class="small-title">
+            Morgen Energie-Check
+        </div>
 
+        <h2>Wie viel Energie hast du heute?</h2>
 
-        // Prüft, ob zwei Tage direkt aufeinander folgen.
-        function isYesterday(dateString) {
+        <div class="buttons">
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            <button
+                class="level1"
+                onclick="selectEnergy(1)">
 
-            const date = new Date(dateString + 'T00:00:00');
+                Level 1<br>
+                <small>Sehr wenig Energie</small>
 
-            const difference =
-                today.getTime() - date.getTime();
+            </button>
 
-            const oneDay =
-                1000 * 60 * 60 * 24;
 
-            return difference === oneDay;
-        }
+            <button
+                class="level2"
+                onclick="selectEnergy(2)">
 
+                Level 2<br>
+                <small>Wenig Energie</small>
 
-        // Wird ausgeführt, wenn eine Antwort ausgewählt wird.
-        function saveAnswer(answer) {
+            </button>
 
-            const today = getToday();
-            const data = getData();
 
+            <button
+                class="level3"
+                onclick="selectEnergy(3)">
 
-            // Falls heute bereits beantwortet wurde,
-            // nichts doppelt speichern.
-            if (data.answers[today]) {
-                showResult(data.answers[today], data.streak);
-                return;
-            }
+                Level 3<br>
+                <small>Normale Energie</small>
 
+            </button>
 
-            // Antwort für heute speichern.
-            data.answers[today] = answer;
 
+            <button
+                class="level4"
+                onclick="selectEnergy(4)">
 
-            // Streak berechnen.
-            if (!data.lastDate) {
+                Level 4<br>
+                <small>Viel Energie</small>
 
-                // Erster Tag
-                data.streak = 1;
+            </button>
 
-            } else if (isYesterday(data.lastDate)) {
+        </div>
 
-                // Gestern ebenfalls gemacht
-                data.streak++;
 
-            } else {
+        <button
+            class="back-button"
+            onclick="goHome()">
 
-                // Eine oder mehrere Lücken
-                data.streak = 1;
-            }
+            ← Zurück
 
+        </button>
 
-            data.lastDate = today;
+    </section>
 
 
-            // Daten speichern
-            saveData(data);
 
+    <!-- =====================================================
+         MORGEN – FERTIG
+         ===================================================== -->
 
-            // Ergebnis anzeigen
-            showResult(answer, data.streak);
-        }
+    <section id="morningDoneScreen" class="screen">
 
+        <div class="success">
+            ☀️
+        </div>
 
-        // Ergebnis anzeigen.
-        function showResult(answer, streak) {
+        <div class="small-title">
+            Morgen-Check abgeschlossen
+        </div>
 
-            document.getElementById('questionScreen').style.display = 'none';
+        <h2>Guten Start in den Tag.</h2>
 
-            document.getElementById('resultScreen').style.display = 'block';
+        <div class="notebook">
 
-            document.getElementById('answerText').textContent = answer;
+            <strong>📓 Deine Aufgaben</strong>
 
-            document.getElementById('resultStreak').textContent = streak;
-        }
+            Siehe dein Notizbuch für die Aufgaben,
+            die du am Abend zuvor definiert hast.
 
+        </div>
 
-        // Prüft beim Start, ob heute bereits geantwortet wurde.
-        function checkToday() {
 
-            const today = getToday();
-            const data = getData();
+        <div class="routine-counter">
 
-            document.getElementById('streak').textContent =
-                data.streak;
+            <div class="counter-number" id="morningCounter">
+                0
+            </div>
 
+            <div class="counter-label">
+                Tage Routine abgeschlossen
+            </div>
 
-            if (data.answers[today]) {
+        </div>
 
-                showResult(
-                    data.answers[today],
-                    data.streak
-                );
-            }
-        }
 
+        <button
+            class="back-button"
+            onclick="goHome()">
 
-        // Nur zum Testen.
-        // Damit kann man die App zurücksetzen.
-        function resetForTesting() {
+            ← Zur Startseite
 
-            const confirmed =
-                confirm(
-                    'Möchtest du wirklich alle gespeicherten Daten löschen?'
-                );
+        </button>
 
-            if (!confirmed) {
-                return;
-            }
+    </section>
 
-            localStorage.removeItem('abendCheckin');
 
-            location.reload();
-        }
 
+    <!-- =====================================================
+         ABEND – CHECK IN
+         ===================================================== -->
 
-        // App starten
-        checkToday();
+    <section id="eveningScreen" class="screen">
 
-    </script>
+        <div class="icon">🌙</div>
+
+        <div class="small-title">
+            Abend Check-in
+        </div>
+
+        <h2>Wie war dein Tag?</h2>
+
+        <div class="question">
+            Hast du heute an deinen Zielen gearbeitet?
+        </div>
+
+
+        <div class="buttons">
+
+            <button
+                class="yes"
+                onclick="saveEvening('Ja')">
+
+                ✅ Ja
+
+            </button>
+
+
+            <button
+                class="some"
+                onclick="saveEvening('Ein bisschen')">
+
+                🟡 Ein bisschen
+
+            </button>
+
+
+            <button
+                class="no"
+                onclick="saveEvening('Nein')">
+
+                ❌ Nein
+
+            </button>
+
+        </div>
+
+
+        <button
+            class="back-button"
+            onclick="goHome()">
+
+            ← Zurück
+
+        </button>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ABEND – ZIELE FÜR MORGEN
+         ===================================================== -->
+
+    <section id="eveningDoneScreen" class="screen">
+
+        <div class="success">
+            🌙
+        </div>
+
+        <div class="small-title">
+            Abend-Check-in abgeschlossen
+        </div>
+
+        <h2>Gut gemacht.</h2>
+
+
+        <div class="notebook">
+
+            <strong>📓 Ziele für morgen</strong>
+
+            Definiere deine Ziele für den nächsten Tag
+            in deinem Notizbuch.
+
+        </div>
+
+
+        <div class="routine-counter">
+
+            <div class="counter-number" id="eveningCounter">
+                0
+            </div>
+
+            <div class="counter-label">
+                Tage Routine abgeschlossen
+            </div>
+
+        </div>
+
+
+        <button
+            class="back-button"
+            onclick="goHome()">
+
+            ← Zur Startseite
+
+        </button>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         TAGESROUTINE FERTIG
+         ===================================================== -->
+
+    <section id="completeScreen" class="screen">
+
+        <div class="success">
+            🌱
+        </div>
+
+        <div class="small-title">
+            Tagesroutine abgeschlossen
+        </div>
+
+        <h2>Beide Checks erledigt.</h2>
+
+        <p class="success-text">
+            Du hast heute sowohl den Morgen- als auch
+            den Abend-Check gemacht.
+        </p>
+
+
+        <div class="routine-counter">
+
+            <div class="counter-number" id="completeCounter">
+                0
+            </div>
+
+            <div class="counter-label">
+                Tage Routine abgeschlossen
+            </div>
+
+        </div>
+
+
+        <button
+            class="back-button"
+            onclick="goHome()">
+
+            ← Zur Startseite
+
+        </button>
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+/*
+==============================================================
+DATEN
+==============================================================
+
+Alles wird momentan lokal auf dem Gerät gespeichert.
+
+Es wird kein Server verwendet.
+Es wird kein Account benötigt.
+Es werden keine Daten verschickt.
+*/
+
+
+function getToday() {
+
+    const now = new Date();
+
+    const year = now.getFullYear();
+
+    const month =
+        String(now.getMonth() + 1).padStart(2, '0');
+
+    const day =
+        String(now.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
+
+
+function getData() {
+
+    const saved =
+        localStorage.getItem('meineRoutine');
+
+    if (!saved) {
+
+        return {
+            days: {},
+            routineCounter: 0,
+            lastCompletedDate: null
+        };
+
+    }
+
+    return JSON.parse(saved);
+}
+
+
+
+function saveData(data) {
+
+    localStorage.setItem(
+        'meineRoutine',
+        JSON.stringify(data)
+    );
+
+}
+
+
+
+/*
+==============================================================
+DATUM / TAGE
+==============================================================
+*/
+
+
+function isYesterday(dateString) {
+
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+
+    const date =
+        new Date(dateString + 'T00:00:00');
+
+
+    const difference =
+        today.getTime() - date.getTime();
+
+
+    const oneDay =
+        1000 * 60 * 60 * 24;
+
+
+    return difference === oneDay;
+
+}
+
+
+
+/*
+==============================================================
+SCREEN MANAGEMENT
+==============================================================
+*/
+
+
+function showScreen(screenId) {
+
+    const screens =
+        document.querySelectorAll('.screen');
+
+
+    screens.forEach(screen => {
+
+        screen.classList.remove('active');
+
+    });
+
+
+    document
+        .getElementById(screenId)
+        .classList.add('active');
+
+
+    window.scrollTo(0, 0);
+
+}
+
+
+
+function goHome() {
+
+    updateCounters();
+
+    showScreen('homeScreen');
+
+}
+
+
+
+/*
+==============================================================
+STARTSEITE
+==============================================================
+*/
+
+
+function openMorning() {
+
+    const data = getData();
+
+    const today = getToday();
+
+
+    if (
+        data.days[today] &&
+        data.days[today].morning
+    ) {
+
+        document.getElementById('morningCounter').textContent =
+            data.routineCounter;
+
+        showScreen('morningDoneScreen');
+
+        return;
+
+    }
+
+
+    showScreen('morningScreen');
+
+}
+
+
+
+function openEvening() {
+
+    const data = getData();
+
+    const today = getToday();
+
+
+    if (
+        data.days[today] &&
+        data.days[today].evening
+    ) {
+
+        document.getElementById('eveningCounter').textContent =
+            data.routineCounter;
+
+        showScreen('eveningDoneScreen');
+
+        return;
+
+    }
+
+
+    showScreen('eveningScreen');
+
+}
+
+
+
+/*
+==============================================================
+MORGEN ENERGY CHECK
+==============================================================
+*/
+
+
+function selectEnergy(level) {
+
+    const data = getData();
+
+    const today = getToday();
+
+
+    // Tagesdaten erstellen, falls noch nicht vorhanden
+    if (!data.days[today]) {
+
+        data.days[today] = {};
+
+    }
+
+
+    // Energie-Level speichern
+    data.days[today].energy = level;
+
+    // Morgen-Check abschließen
+    data.days[today].morning = true;
+
+
+    checkRoutineCompletion(data, today);
+
+    saveData(data);
+
+
+    document.getElementById('morningCounter').textContent =
+        data.routineCounter;
+
+
+    showScreen('morningDoneScreen');
+
+}
+
+
+
+/*
+==============================================================
+ABEND CHECK-IN
+==============================================================
+*/
+
+
+function saveEvening(answer) {
+
+    const data = getData();
+
+    const today = getToday();
+
+
+    // Tagesdaten erstellen
+    if (!data.days[today]) {
+
+        data.days[today] = {};
+
+    }
+
+
+    // Antwort speichern
+    data.days[today].eveningAnswer = answer;
+
+    // Abend-Check abschließen
+    data.days[today].evening = true;
+
+
+    checkRoutineCompletion(data, today);
+
+    saveData(data);
+
+
+    document.getElementById('eveningCounter').textContent =
+        data.routineCounter;
+
+
+    showScreen('eveningDoneScreen');
+
+}
+
+
+
+/*
+==============================================================
+ROUTINE COUNTER
+==============================================================
+
+Der Counter steigt nur dann,
+wenn MORGEN + ABEND am selben Tag
+erledigt wurden.
+*/
+
+
+function checkRoutineCompletion(data, today) {
+
+    const day = data.days[today];
+
+
+    // Noch nicht beide erledigt
+    if (
+        !day.morning ||
+        !day.evening
+    ) {
+
+        return;
+
+    }
+
+
+    // Dieser Tag wurde bereits gezählt
+    if (day.counted) {
+
+        return;
+
+    }
+
+
+    /*
+     * Erster vollständig abgeschlossener Tag
+     */
+    if (!data.lastCompletedDate) {
+
+        data.routineCounter = 1;
+
+    }
+
+    /*
+     * Wenn der letzte vollständige Tag gestern war:
+     * Counter +1
+     */
+    else if (
+        isYesterday(data.lastCompletedDate)
+    ) {
+
+        data.routineCounter++;
+
+    }
+
+    /*
+     * Wenn eine Lücke vorhanden ist:
+     * neue Serie beginnt bei 1
+     */
+    else {
+
+        data.routineCounter = 1;
+
+    }
+
+
+    // Tag als gezählt markieren
+    day.counted = true;
+
+
+    // Datum des letzten vollständigen Tages
+    data.lastCompletedDate = today;
+
+}
+
+
+
+/*
+==============================================================
+COUNTER ANZEIGEN
+==============================================================
+*/
+
+
+function updateCounters() {
+
+    const data = getData();
+
+
+    document.getElementById('homeCounter').textContent =
+        data.routineCounter;
+
+
+    document.getElementById('morningCounter').textContent =
+        data.routineCounter;
+
+
+    document.getElementById('eveningCounter').textContent =
+        data.routineCounter;
+
+
+    document.getElementById('completeCounter').textContent =
+        data.routineCounter;
+
+}
+
+
+
+/*
+==============================================================
+START
+==============================================================
+*/
+
+
+updateCounters();
+
+</script>
 
 </body>
 </html>
+```
