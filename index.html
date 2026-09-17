@@ -1,18 +1,36 @@
-```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <!-- iPhone / Home-Bildschirm -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Meine Routine">
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="default"
+    >
+
+    <meta
+        name="apple-mobile-web-app-title"
+        content="Meine Routine"
+    >
 
     <title>Meine Routine</title>
 
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -114,7 +132,8 @@
 
             cursor: pointer;
 
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.05);
 
             transition:
                 transform 0.15s ease,
@@ -123,11 +142,19 @@
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+
+            box-shadow:
+                0 5px 15px rgba(0, 0, 0, 0.08);
         }
 
         button:active {
             transform: scale(0.98);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+            transform: none;
         }
 
         .morning-button {
@@ -176,7 +203,8 @@
             line-height: 1.5;
             color: #555;
 
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.04);
         }
 
         .notebook strong {
@@ -204,7 +232,8 @@
             background: white;
             border-radius: 18px;
 
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.04);
         }
 
         .counter-number {
@@ -231,15 +260,58 @@
             color: #555;
         }
 
-        .already-done {
+        .login-box {
             margin-top: 25px;
-            padding: 15px;
+        }
+
+        .login-input {
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+
+            padding: 17px 18px;
+
+            margin-bottom: 12px;
+
+            font-size: 16px;
+
+            background: white;
+
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .login-input:focus {
+            outline: 2px solid #ddd;
+        }
+
+        .error-message {
+            margin-top: 15px;
+            padding: 14px;
+
             border-radius: 14px;
-            background: #e7f2e9;
-            color: #4b6850;
+
+            background: #f3dfdf;
+            color: #754b4b;
+
             font-size: 14px;
             line-height: 1.4;
         }
+
+        .logout-button {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #999;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            color: #888;
+            font-size: 14px;
+        }
+
     </style>
 </head>
 
@@ -250,12 +322,72 @@
 
 
     <!-- =====================================================
+         LOGIN
+         ===================================================== -->
+
+    <section id="loginScreen" class="screen">
+
+        <div class="icon">
+            🔐
+        </div>
+
+        <div class="small-title">
+            Meine Routine
+        </div>
+
+        <h1>Willkommen</h1>
+
+        <p class="description">
+            Melde dich an, um deine Routine
+            zu speichern.
+        </p>
+
+        <div class="login-box">
+
+            <input
+                id="emailInput"
+                class="login-input"
+                type="email"
+                placeholder="E-Mail-Adresse"
+                autocomplete="email"
+            >
+
+            <input
+                id="passwordInput"
+                class="login-input"
+                type="password"
+                placeholder="Passwort"
+                autocomplete="current-password"
+            >
+
+            <button
+                id="loginButton"
+                onclick="login()"
+            >
+                Anmelden
+            </button>
+
+            <div
+                id="loginError"
+                class="error-message"
+                style="display: none;"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
          STARTSEITE
          ===================================================== -->
 
-    <section id="homeScreen" class="screen active">
+    <section id="homeScreen" class="screen">
 
-        <div class="icon">🌱</div>
+        <div class="icon">
+            🌱
+        </div>
 
         <div class="small-title">
             Deine tägliche Routine
@@ -272,19 +404,16 @@
 
             <button
                 class="morning-button"
-                onclick="openMorning()">
-
+                onclick="openMorning()"
+            >
                 🌅 Morgen Energie-Check
-
             </button>
-
 
             <button
                 class="evening-button"
-                onclick="openEvening()">
-
+                onclick="openEvening()"
+            >
                 🌙 Abend Check-in
-
             </button>
 
         </div>
@@ -292,7 +421,10 @@
 
         <div class="routine-counter">
 
-            <div class="counter-number" id="homeCounter">
+            <div
+                class="counter-number"
+                id="homeCounter"
+            >
                 0
             </div>
 
@@ -301,6 +433,14 @@
             </div>
 
         </div>
+
+
+        <button
+            class="logout-button"
+            onclick="logout()"
+        >
+            Abmelden
+        </button>
 
     </section>
 
@@ -312,53 +452,50 @@
 
     <section id="morningScreen" class="screen">
 
-        <div class="icon">🌅</div>
+        <div class="icon">
+            🌅
+        </div>
 
         <div class="small-title">
             Morgen Energie-Check
         </div>
 
-        <h2>Wie viel Energie hast du heute?</h2>
+        <h2>
+            Wie viel Energie hast du heute?
+        </h2>
 
         <div class="buttons">
 
             <button
                 class="level1"
-                onclick="selectEnergy(1)">
-
+                onclick="selectEnergy(1)"
+            >
                 Level 1<br>
                 <small>Sehr wenig Energie</small>
-
             </button>
-
 
             <button
                 class="level2"
-                onclick="selectEnergy(2)">
-
+                onclick="selectEnergy(2)"
+            >
                 Level 2<br>
                 <small>Wenig Energie</small>
-
             </button>
-
 
             <button
                 class="level3"
-                onclick="selectEnergy(3)">
-
+                onclick="selectEnergy(3)"
+            >
                 Level 3<br>
                 <small>Normale Energie</small>
-
             </button>
-
 
             <button
                 class="level4"
-                onclick="selectEnergy(4)">
-
+                onclick="selectEnergy(4)"
+            >
                 Level 4<br>
                 <small>Viel Energie</small>
-
             </button>
 
         </div>
@@ -366,10 +503,9 @@
 
         <button
             class="back-button"
-            onclick="goHome()">
-
+            onclick="goHome()"
+        >
             ← Zurück
-
         </button>
 
     </section>
@@ -390,11 +526,15 @@
             Morgen-Check abgeschlossen
         </div>
 
-        <h2>Guten Start in den Tag.</h2>
+        <h2>
+            Guten Start in den Tag.
+        </h2>
 
         <div class="notebook">
 
-            <strong>📓 Deine Aufgaben</strong>
+            <strong>
+                📓 Deine Aufgaben
+            </strong>
 
             Siehe dein Notizbuch für die Aufgaben,
             die du am Abend zuvor definiert hast.
@@ -404,7 +544,10 @@
 
         <div class="routine-counter">
 
-            <div class="counter-number" id="morningCounter">
+            <div
+                class="counter-number"
+                id="morningCounter"
+            >
                 0
             </div>
 
@@ -417,10 +560,9 @@
 
         <button
             class="back-button"
-            onclick="goHome()">
-
+            onclick="goHome()"
+        >
             ← Zur Startseite
-
         </button>
 
     </section>
@@ -433,13 +575,17 @@
 
     <section id="eveningScreen" class="screen">
 
-        <div class="icon">🌙</div>
+        <div class="icon">
+            🌙
+        </div>
 
         <div class="small-title">
             Abend Check-in
         </div>
 
-        <h2>Wie war dein Tag?</h2>
+        <h2>
+            Wie war dein Tag?
+        </h2>
 
         <div class="question">
             Hast du heute an deinen Zielen gearbeitet?
@@ -450,28 +596,23 @@
 
             <button
                 class="yes"
-                onclick="saveEvening('Ja')">
-
+                onclick="saveEvening('Ja')"
+            >
                 ✅ Ja
-
             </button>
-
 
             <button
                 class="some"
-                onclick="saveEvening('Ein bisschen')">
-
+                onclick="saveEvening('Ein bisschen')"
+            >
                 🟡 Ein bisschen
-
             </button>
-
 
             <button
                 class="no"
-                onclick="saveEvening('Nein')">
-
+                onclick="saveEvening('Nein')"
+            >
                 ❌ Nein
-
             </button>
 
         </div>
@@ -479,10 +620,9 @@
 
         <button
             class="back-button"
-            onclick="goHome()">
-
+            onclick="goHome()"
+        >
             ← Zurück
-
         </button>
 
     </section>
@@ -490,7 +630,7 @@
 
 
     <!-- =====================================================
-         ABEND – ZIELE FÜR MORGEN
+         ABEND – FERTIG
          ===================================================== -->
 
     <section id="eveningDoneScreen" class="screen">
@@ -503,12 +643,15 @@
             Abend-Check-in abgeschlossen
         </div>
 
-        <h2>Gut gemacht.</h2>
-
+        <h2>
+            Gut gemacht.
+        </h2>
 
         <div class="notebook">
 
-            <strong>📓 Ziele für morgen</strong>
+            <strong>
+                📓 Ziele für morgen
+            </strong>
 
             Definiere deine Ziele für den nächsten Tag
             in deinem Notizbuch.
@@ -518,7 +661,10 @@
 
         <div class="routine-counter">
 
-            <div class="counter-number" id="eveningCounter">
+            <div
+                class="counter-number"
+                id="eveningCounter"
+            >
                 0
             </div>
 
@@ -531,57 +677,9 @@
 
         <button
             class="back-button"
-            onclick="goHome()">
-
+            onclick="goHome()"
+        >
             ← Zur Startseite
-
-        </button>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         TAGESROUTINE FERTIG
-         ===================================================== -->
-
-    <section id="completeScreen" class="screen">
-
-        <div class="success">
-            🌱
-        </div>
-
-        <div class="small-title">
-            Tagesroutine abgeschlossen
-        </div>
-
-        <h2>Beide Checks erledigt.</h2>
-
-        <p class="success-text">
-            Du hast heute sowohl den Morgen- als auch
-            den Abend-Check gemacht.
-        </p>
-
-
-        <div class="routine-counter">
-
-            <div class="counter-number" id="completeCounter">
-                0
-            </div>
-
-            <div class="counter-label">
-                Tage Routine abgeschlossen
-            </div>
-
-        </div>
-
-
-        <button
-            class="back-button"
-            onclick="goHome()">
-
-            ← Zur Startseite
-
         </button>
 
     </section>
@@ -595,22 +693,37 @@
 
 /*
 ==============================================================
-DATEN
+SUPABASE VERBINDUNG
 ==============================================================
-
-Alles wird momentan lokal auf dem Gerät gespeichert.
-
-Es wird kein Server verwendet.
-Es wird kein Account benötigt.
-Es werden keine Daten verschickt.
 */
 
+const SUPABASE_URL =
+    'https://hfvgvpusjyttvwvjliwc.supabase.co';
+
+const SUPABASE_KEY =
+    'sb_publishable_9oft3xodu-9GlP0Lf1rrdw_UuTi5vq_';
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+
+/*
+==============================================================
+DATUM
+==============================================================
+*/
 
 function getToday() {
 
     const now = new Date();
 
-    const year = now.getFullYear();
+    const year =
+        now.getFullYear();
 
     const month =
         String(now.getMonth() + 1).padStart(2, '0');
@@ -623,81 +736,16 @@ function getToday() {
 
 
 
-function getData() {
-
-    const saved =
-        localStorage.getItem('meineRoutine');
-
-    if (!saved) {
-
-        return {
-            days: {},
-            routineCounter: 0,
-            lastCompletedDate: null
-        };
-
-    }
-
-    return JSON.parse(saved);
-}
-
-
-
-function saveData(data) {
-
-    localStorage.setItem(
-        'meineRoutine',
-        JSON.stringify(data)
-    );
-
-}
-
-
-
-/*
-==============================================================
-DATUM / TAGE
-==============================================================
-*/
-
-
-function isYesterday(dateString) {
-
-    const today = new Date();
-
-    today.setHours(0, 0, 0, 0);
-
-
-    const date =
-        new Date(dateString + 'T00:00:00');
-
-
-    const difference =
-        today.getTime() - date.getTime();
-
-
-    const oneDay =
-        1000 * 60 * 60 * 24;
-
-
-    return difference === oneDay;
-
-}
-
-
-
 /*
 ==============================================================
 SCREEN MANAGEMENT
 ==============================================================
 */
 
-
 function showScreen(screenId) {
 
     const screens =
         document.querySelectorAll('.screen');
-
 
     screens.forEach(screen => {
 
@@ -705,11 +753,14 @@ function showScreen(screenId) {
 
     });
 
+    const screen =
+        document.getElementById(screenId);
 
-    document
-        .getElementById(screenId)
-        .classList.add('active');
+    if (screen) {
 
+        screen.classList.add('active');
+
+    }
 
     window.scrollTo(0, 0);
 
@@ -729,106 +780,70 @@ function goHome() {
 
 /*
 ==============================================================
-STARTSEITE
+LOGIN
 ==============================================================
 */
 
+async function login() {
 
-function openMorning() {
+    const email =
+        document.getElementById('emailInput').value.trim();
 
-    const data = getData();
+    const password =
+        document.getElementById('passwordInput').value;
 
-    const today = getToday();
+    const errorElement =
+        document.getElementById('loginError');
+
+    const loginButton =
+        document.getElementById('loginButton');
 
 
-    if (
-        data.days[today] &&
-        data.days[today].morning
-    ) {
+    errorElement.style.display = 'none';
 
-        document.getElementById('morningCounter').textContent =
-            data.routineCounter;
 
-        showScreen('morningDoneScreen');
+    if (!email || !password) {
+
+        errorElement.textContent =
+            'Bitte E-Mail-Adresse und Passwort eingeben.';
+
+        errorElement.style.display = 'block';
 
         return;
 
     }
 
 
-    showScreen('morningScreen');
-
-}
-
+    loginButton.disabled = true;
+    loginButton.textContent = 'Anmeldung läuft …';
 
 
-function openEvening() {
+    const { error } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
 
-    const data = getData();
 
-    const today = getToday();
+    loginButton.disabled = false;
+    loginButton.textContent = 'Anmelden';
 
 
-    if (
-        data.days[today] &&
-        data.days[today].evening
-    ) {
+    if (error) {
 
-        document.getElementById('eveningCounter').textContent =
-            data.routineCounter;
+        errorElement.textContent =
+            'Anmeldung fehlgeschlagen. Bitte E-Mail und Passwort prüfen.';
 
-        showScreen('eveningDoneScreen');
+        errorElement.style.display = 'block';
+
+        console.error(error);
 
         return;
 
     }
 
 
-    showScreen('eveningScreen');
-
-}
-
-
-
-/*
-==============================================================
-MORGEN ENERGY CHECK
-==============================================================
-*/
-
-
-function selectEnergy(level) {
-
-    const data = getData();
-
-    const today = getToday();
-
-
-    // Tagesdaten erstellen, falls noch nicht vorhanden
-    if (!data.days[today]) {
-
-        data.days[today] = {};
-
-    }
-
-
-    // Energie-Level speichern
-    data.days[today].energy = level;
-
-    // Morgen-Check abschließen
-    data.days[today].morning = true;
-
-
-    checkRoutineCompletion(data, today);
-
-    saveData(data);
-
-
-    document.getElementById('morningCounter').textContent =
-        data.routineCounter;
-
-
-    showScreen('morningDoneScreen');
+    await startApp();
 
 }
 
@@ -836,43 +851,15 @@ function selectEnergy(level) {
 
 /*
 ==============================================================
-ABEND CHECK-IN
+ABMELDEN
 ==============================================================
 */
 
+async function logout() {
 
-function saveEvening(answer) {
+    await supabaseClient.auth.signOut();
 
-    const data = getData();
-
-    const today = getToday();
-
-
-    // Tagesdaten erstellen
-    if (!data.days[today]) {
-
-        data.days[today] = {};
-
-    }
-
-
-    // Antwort speichern
-    data.days[today].eveningAnswer = answer;
-
-    // Abend-Check abschließen
-    data.days[today].evening = true;
-
-
-    checkRoutineCompletion(data, today);
-
-    saveData(data);
-
-
-    document.getElementById('eveningCounter').textContent =
-        data.routineCounter;
-
-
-    showScreen('eveningDoneScreen');
+    showScreen('loginScreen');
 
 }
 
@@ -880,77 +867,247 @@ function saveEvening(answer) {
 
 /*
 ==============================================================
-ROUTINE COUNTER
+AKTUELLEN BENUTZER HOLEN
 ==============================================================
-
-Der Counter steigt nur dann,
-wenn MORGEN + ABEND am selben Tag
-erledigt wurden.
 */
 
+async function getCurrentUser() {
 
-function checkRoutineCompletion(data, today) {
-
-    const day = data.days[today];
-
-
-    // Noch nicht beide erledigt
-    if (
-        !day.morning ||
-        !day.evening
-    ) {
-
-        return;
-
-    }
+    const {
+        data,
+        error
+    } = await supabaseClient.auth.getUser();
 
 
-    // Dieser Tag wurde bereits gezählt
-    if (day.counted) {
+    if (error) {
 
-        return;
+        console.error(error);
+
+        return null;
 
     }
 
 
-    /*
-     * Erster vollständig abgeschlossener Tag
-     */
-    if (!data.lastCompletedDate) {
+    return data.user;
 
-        data.routineCounter = 1;
+}
 
-    }
 
-    /*
-     * Wenn der letzte vollständige Tag gestern war:
-     * Counter +1
-     */
-    else if (
-        isYesterday(data.lastCompletedDate)
-    ) {
 
-        data.routineCounter++;
+/*
+==============================================================
+HEUTIGEN TAG AUS SUPABASE LADEN
+==============================================================
+*/
 
-    }
+async function getTodayData() {
 
-    /*
-     * Wenn eine Lücke vorhanden ist:
-     * neue Serie beginnt bei 1
-     */
-    else {
+    const user =
+        await getCurrentUser();
 
-        data.routineCounter = 1;
+    if (!user) {
+
+        return null;
 
     }
 
 
-    // Tag als gezählt markieren
-    day.counted = true;
+    const today =
+        getToday();
 
 
-    // Datum des letzten vollständigen Tages
-    data.lastCompletedDate = today;
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from('routine_days')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('date', today)
+        .maybeSingle();
+
+
+    if (error) {
+
+        console.error(error);
+
+        return null;
+
+    }
+
+
+    return data;
+
+}
+
+
+
+/*
+==============================================================
+TAG ANLEGEN ODER AKTUALISIEREN
+==============================================================
+*/
+
+async function saveTodayData(changes) {
+
+    const user =
+        await getCurrentUser();
+
+    if (!user) {
+
+        return null;
+
+    }
+
+
+    const today =
+        getToday();
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from('routine_days')
+        .upsert(
+            {
+                user_id: user.id,
+                date: today,
+                ...changes
+            },
+            {
+                onConflict: 'user_id,date'
+            }
+        )
+        .select()
+        .single();
+
+
+    if (error) {
+
+        console.error(error);
+
+        alert(
+            'Die Daten konnten nicht gespeichert werden.'
+        );
+
+        return null;
+
+    }
+
+
+    return data;
+
+}
+
+
+
+/*
+==============================================================
+ALLE ABGESCHLOSSENEN TAGE LADEN
+==============================================================
+*/
+
+async function getCompletedDays() {
+
+    const user =
+        await getCurrentUser();
+
+    if (!user) {
+
+        return [];
+
+    }
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from('routine_days')
+        .select('date, morning_done, evening_done')
+        .eq('user_id', user.id)
+        .eq('morning_done', true)
+        .eq('evening_done', true)
+        .order('date', {
+            ascending: false
+        });
+
+
+    if (error) {
+
+        console.error(error);
+
+        return [];
+
+    }
+
+
+    return data || [];
+
+}
+
+
+
+/*
+==============================================================
+ROUTINE COUNTER BERECHNEN
+==============================================================
+*/
+
+function calculateRoutineCounter(days) {
+
+    if (!days.length) {
+
+        return 0;
+
+    }
+
+
+    const dates =
+        days.map(day => day.date);
+
+
+    let counter = 1;
+
+
+    for (let i = 1; i < dates.length; i++) {
+
+        const current =
+            new Date(
+                dates[i - 1] + 'T00:00:00'
+            );
+
+        const previous =
+            new Date(
+                dates[i] + 'T00:00:00'
+            );
+
+
+        const difference =
+            (
+                current.getTime() -
+                previous.getTime()
+            ) /
+            (
+                1000 * 60 * 60 * 24
+            );
+
+
+        if (difference === 1) {
+
+            counter++;
+
+        } else {
+
+            break;
+
+        }
+
+    }
+
+
+    return counter;
 
 }
 
@@ -962,26 +1119,35 @@ COUNTER ANZEIGEN
 ==============================================================
 */
 
+async function updateCounters() {
 
-function updateCounters() {
-
-    const data = getData();
-
-
-    document.getElementById('homeCounter').textContent =
-        data.routineCounter;
+    const days =
+        await getCompletedDays();
 
 
-    document.getElementById('morningCounter').textContent =
-        data.routineCounter;
+    const counter =
+        calculateRoutineCounter(days);
 
 
-    document.getElementById('eveningCounter').textContent =
-        data.routineCounter;
+    const elements = [
+        'homeCounter',
+        'morningCounter',
+        'eveningCounter'
+    ];
 
 
-    document.getElementById('completeCounter').textContent =
-        data.routineCounter;
+    elements.forEach(id => {
+
+        const element =
+            document.getElementById(id);
+
+        if (element) {
+
+            element.textContent = counter;
+
+        }
+
+    });
 
 }
 
@@ -989,15 +1155,229 @@ function updateCounters() {
 
 /*
 ==============================================================
-START
+STARTSEITE
 ==============================================================
 */
 
+async function openMorning() {
 
-updateCounters();
+    const today =
+        await getTodayData();
+
+
+    if (
+        today &&
+        today.morning_done
+    ) {
+
+        await updateCounters();
+
+        showScreen(
+            'morningDoneScreen'
+        );
+
+        return;
+
+    }
+
+
+    showScreen(
+        'morningScreen'
+    );
+
+}
+
+
+
+async function openEvening() {
+
+    const today =
+        await getTodayData();
+
+
+    if (
+        today &&
+        today.evening_done
+    ) {
+
+        await updateCounters();
+
+        showScreen(
+            'eveningDoneScreen'
+        );
+
+        return;
+
+    }
+
+
+    showScreen(
+        'eveningScreen'
+    );
+
+}
+
+
+
+/*
+==============================================================
+MORGEN ENERGY CHECK
+==============================================================
+*/
+
+async function selectEnergy(level) {
+
+    const button =
+        event?.currentTarget;
+
+
+    if (button) {
+
+        button.disabled = true;
+
+    }
+
+
+    const saved =
+        await saveTodayData({
+            energy_level: level,
+            morning_done: true
+        });
+
+
+    if (!saved) {
+
+        if (button) {
+
+            button.disabled = false;
+
+        }
+
+        return;
+
+    }
+
+
+    await updateCounters();
+
+    showScreen(
+        'morningDoneScreen'
+    );
+
+}
+
+
+
+/*
+==============================================================
+ABEND CHECK-IN
+==============================================================
+*/
+
+async function saveEvening(answer) {
+
+    const button =
+        event?.currentTarget;
+
+
+    if (button) {
+
+        button.disabled = true;
+
+    }
+
+
+    const saved =
+        await saveTodayData({
+            evening_answer: answer,
+            evening_done: true
+        });
+
+
+    if (!saved) {
+
+        if (button) {
+
+            button.disabled = false;
+
+        }
+
+        return;
+
+    }
+
+
+    await updateCounters();
+
+    showScreen(
+        'eveningDoneScreen'
+    );
+
+}
+
+
+
+/*
+==============================================================
+APP STARTEN
+==============================================================
+*/
+
+async function startApp() {
+
+    const user =
+        await getCurrentUser();
+
+
+    if (!user) {
+
+        showScreen('loginScreen');
+
+        return;
+
+    }
+
+
+    showScreen('homeScreen');
+
+    await updateCounters();
+
+}
+
+
+
+/*
+==============================================================
+BEIM ÖFFNEN PRÜFEN
+==============================================================
+*/
+
+async function initializeApp() {
+
+    const {
+        data
+    } = await supabaseClient.auth.getSession();
+
+
+    if (
+        data &&
+        data.session
+    ) {
+
+        await startApp();
+
+    } else {
+
+        showScreen('loginScreen');
+
+    }
+
+}
+
+
+initializeApp();
 
 </script>
 
 </body>
 </html>
-```
