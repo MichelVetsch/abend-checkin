@@ -1,1381 +1,1147 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <!-- iPhone / Home-Bildschirm -->
-    <meta
-        name="apple-mobile-web-app-capable"
-        content="yes"
-    >
-
-    <meta
-        name="apple-mobile-web-app-status-bar-style"
-        content="default"
-    >
-
-    <meta
-        name="apple-mobile-web-app-title"
-        content="Meine Routine"
-    >
-
-    <title>Meine Routine</title>
-
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                Helvetica,
-                Arial,
-                sans-serif;
-
-            background: #f5f3ef;
-            color: #252525;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            padding: 24px;
-        }
-
-        .app {
-            width: 100%;
-            max-width: 430px;
-            text-align: center;
-        }
-
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        .icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .small-title {
-            font-size: 13px;
-            color: #888;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            font-size: 31px;
-            font-weight: 600;
-            margin: 0 0 15px;
-        }
-
-        h2 {
-            font-size: 25px;
-            font-weight: 600;
-            margin: 0 0 25px;
-        }
-
-        .description {
-            color: #777;
-            font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 35px;
-        }
-
-        .question {
-            font-size: 23px;
-            line-height: 1.4;
-            font-weight: 500;
-            margin-bottom: 30px;
-        }
-
-        .buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        button {
-            width: 100%;
-            border: none;
-            border-radius: 16px;
-
-            padding: 18px 20px;
-
-            font-size: 17px;
-            font-weight: 500;
-
-            background: white;
-            color: #252525;
-
-            cursor: pointer;
-
-            box-shadow:
-                0 2px 10px rgba(0, 0, 0, 0.05);
-
-            transition:
-                transform 0.15s ease,
-                box-shadow 0.15s ease;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-
-            box-shadow:
-                0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: wait;
-            transform: none;
-        }
-
-        .morning-button {
-            background: #fff4d9;
-        }
-
-        .evening-button {
-            background: #e9e5f7;
-        }
-
-        .level1 {
-            background: #f3dfdf;
-        }
-
-        .level2 {
-            background: #f8ead4;
-        }
-
-        .level3 {
-            background: #e5f0e7;
-        }
-
-        .level4 {
-            background: #dcecf4;
-        }
-
-        .yes {
-            background: #e5f2e8;
-        }
-
-        .some {
-            background: #f8efd5;
-        }
-
-        .no {
-            background: #f3dfdf;
-        }
-
-        .notebook {
-            margin-top: 25px;
-            padding: 22px;
-
-            background: white;
-            border-radius: 18px;
-
-            line-height: 1.5;
-            color: #555;
-
-            box-shadow:
-                0 2px 10px rgba(0, 0, 0, 0.04);
-        }
-
-        .notebook strong {
-            display: block;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .success {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
-
-        .success-text {
-            font-size: 17px;
-            color: #777;
-            line-height: 1.5;
-            margin-bottom: 30px;
-        }
-
-        .routine-counter {
-            margin-top: 40px;
-            padding: 18px;
-
-            background: white;
-            border-radius: 18px;
-
-            box-shadow:
-                0 2px 10px rgba(0, 0, 0, 0.04);
-        }
-
-        .counter-number {
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .counter-label {
-            color: #888;
-            font-size: 14px;
-        }
-
-        .back-button {
-            margin-top: 25px;
-            background: transparent;
-            box-shadow: none;
-            color: #888;
-            font-size: 14px;
-        }
-
-        .back-button:hover {
-            box-shadow: none;
-            color: #555;
-        }
-
-        .login-box {
-            margin-top: 25px;
-        }
-
-        .login-input {
-            width: 100%;
-            border: none;
-            border-radius: 16px;
-
-            padding: 17px 18px;
-
-            margin-bottom: 12px;
-
-            font-size: 16px;
-
-            background: white;
-
-            box-shadow:
-                0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .login-input:focus {
-            outline: 2px solid #ddd;
-        }
-
-        .error-message {
-            margin-top: 15px;
-            padding: 14px;
-
-            border-radius: 14px;
-
-            background: #f3dfdf;
-            color: #754b4b;
-
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .logout-button {
-            margin-top: 20px;
-            font-size: 13px;
-            color: #999;
-            background: transparent;
-            box-shadow: none;
-        }
-
-        .status-message {
-            margin-top: 15px;
-            color: #888;
-            font-size: 14px;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f3f0ea">
+  <title>Mein Routine System</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+        "SF Pro Text", Arial, sans-serif;
+      background: #f3f0ea;
+      color: #292824;
+      min-height: 100vh;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px 18px 40px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 23px;
+      line-height: 1.2;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    p {
+      margin: 0 0 18px;
+      line-height: 1.5;
+      color: #66625c;
+    }
+
+    .small {
+      font-size: 14px;
+      color: #77736d;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 48px;
+      margin-bottom: 14px;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 17px;
+      padding: 17px 18px;
+      margin-top: 10px;
+      font-size: 17px;
+      font-weight: 600;
+      color: #302f2b;
+      background: #e7e3dc;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button.primary {
+      background: #dcd7cf;
+    }
+
+    button.morning {
+      background: #f8edb7;
+    }
+
+    button.evening {
+      background: #e4d9f4;
+    }
+
+    button.yes {
+      background: #dcefdc;
+    }
+
+    button.some {
+      background: #f8edc4;
+    }
+
+    button.no {
+      background: #f3d8d8;
+    }
+
+    button.workday {
+      background: #e8e2d8;
+    }
+
+    button.normalday {
+      background: #e6eee3;
+    }
+
+    .routine-counter {
+      text-align: center;
+      padding: 18px;
+      margin-top: 18px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    .counter-number {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .counter-label {
+      color: #77736d;
+      font-size: 15px;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid #d7d2ca;
+      background: white;
+      border-radius: 15px;
+      padding: 16px;
+      font-size: 17px;
+      margin-bottom: 10px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #aaa49a;
+    }
+
+    .error {
+      background: #f5dddd;
+      color: #8a3f3f;
+      padding: 12px 14px;
+      border-radius: 13px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    .success {
+      background: #dff0df;
+      color: #456645;
+      padding: 14px;
+      border-radius: 15px;
+      margin: 15px 0;
+      line-height: 1.45;
+    }
+
+    .info {
+      background: #eeeae3;
+      padding: 16px;
+      border-radius: 17px;
+      margin: 16px 0;
+      line-height: 1.5;
+    }
+
+    .back-button {
+      background: transparent;
+      padding: 12px;
+      color: #68645d;
+      font-weight: 500;
+      margin-top: 18px;
+    }
+
+    .logout {
+      background: transparent;
+      color: #88837b;
+      font-size: 14px;
+      padding: 10px;
+      margin-top: 15px;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e3ded6;
+      margin: 20px 0;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #77736d;
+    }
+
+    .question {
+      font-size: 21px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      line-height: 1.35;
+    }
+
+    .date-text {
+      text-align: center;
+      font-size: 14px;
+      color: #8a857e;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
-
 
 <body>
 
-<main class="app">
+<div class="app">
 
+  <!-- Ladebildschirm -->
+  <div id="loadingScreen" class="screen active">
+    <div class="loading">
+      <div class="icon">🌿</div>
+      <p>Mein Routine System wird geladen …</p>
+    </div>
+  </div>
 
-    <!-- =====================================================
-         LOGIN
-         ===================================================== -->
-
-    <section id="loginScreen" class="screen">
-
-        <div class="icon">
-            🔐
-        </div>
-
-        <div class="small-title">
-            Meine Routine
-        </div>
-
+  <!-- Login -->
+  <div id="loginScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">🌿</div>
         <h1>Willkommen</h1>
+        <p>Melde dich an, um deine Routine zu speichern.</p>
+      </div>
 
-        <p class="description">
-            Melde dich an, um deine Routine
-            zu speichern.
+      <input
+        id="emailInput"
+        type="email"
+        placeholder="E-Mail"
+        autocomplete="email"
+      >
+
+      <input
+        id="passwordInput"
+        type="password"
+        placeholder="Passwort"
+        autocomplete="current-password"
+      >
+
+      <div id="loginError"></div>
+
+      <button class="primary" onclick="login()">
+        Anmelden
+      </button>
+    </div>
+  </div>
+
+  <!-- Startseite -->
+  <div id="homeScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">🌿</div>
+        <h1>Deine tägliche Routine</h1>
+        <h2>Was steht an?</h2>
+        <p>
+          Nimm dir kurz Zeit für deinen Morgen oder für deinen Abend.
         </p>
+      </div>
 
-        <div class="login-box">
+      <button class="morning" onclick="openMorning()">
+        ☀️ Morgen Energie-Check
+      </button>
 
-            <input
-                id="emailInput"
-                class="login-input"
-                type="email"
-                placeholder="E-Mail-Adresse"
-                autocomplete="email"
-            >
+      <button class="evening" onclick="openEvening()">
+        🌙 Abend Check-in
+      </button>
 
-            <input
-                id="passwordInput"
-                class="login-input"
-                type="password"
-                placeholder="Passwort"
-                autocomplete="current-password"
-            >
+      <div class="routine-counter">
+        <div id="counterNumber" class="counter-number">0</div>
+        <div class="counter-label">Tage Routine abgeschlossen</div>
+      </div>
 
-            <button
-                id="loginButton"
-                onclick="login()"
-            >
-                Anmelden
-            </button>
+      <button class="logout" onclick="logout()">
+        Abmelden
+      </button>
+    </div>
+  </div>
 
-            <div
-                id="loginError"
-                class="error-message"
-                style="display: none;"
-            ></div>
+  <!-- Morgen: Arbeitstag oder normaler Tag -->
+  <div id="morningTypeScreen" class="screen">
+    <div class="card">
+      <div class="date-text" id="morningDate"></div>
 
+      <h1>☀️ Morgen Energie-Check</h1>
+
+      <div class="question">
+        Was für ein Tag ist heute?
+      </div>
+
+      <button class="workday" onclick="selectDayType('workday')">
+        💼 Arbeitstag
+      </button>
+
+      <button class="normalday" onclick="selectDayType('normal')">
+        🌿 Normaler Tag
+      </button>
+
+      <button class="back-button" onclick="showHome()">
+        ← Zur Startseite
+      </button>
+    </div>
+  </div>
+
+  <!-- Arbeitstag Hinweis -->
+  <div id="workdayScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">💼</div>
+        <h2>Arbeitstag</h2>
+
+        <div class="info">
+          Viel Spaß bei der Arbeit.<br><br>
+          Heute müssen nur die wichtigsten Aufgaben zusätzlich zur Arbeit
+          erledigt werden.
         </div>
 
-    </section>
-
-
-
-    <!-- =====================================================
-         STARTSEITE
-         ===================================================== -->
-
-    <section id="homeScreen" class="screen">
-
-        <div class="icon">
-            🌱
-        </div>
-
-        <div class="small-title">
-            Deine tägliche Routine
-        </div>
-
-        <h1>Was steht an?</h1>
-
-        <p class="description">
-            Nimm dir kurz Zeit für deinen Morgen<br>
-            oder für deinen Abend.
-        </p>
-
-        <div class="buttons">
-
-            <button
-                class="morning-button"
-                onclick="openMorning()"
-            >
-                🌅 Morgen Energie-Check
-            </button>
-
-            <button
-                class="evening-button"
-                onclick="openEvening()"
-            >
-                🌙 Abend Check-in
-            </button>
-
-        </div>
-
-
-        <div class="routine-counter">
-
-            <div
-                class="counter-number"
-                id="homeCounter"
-            >
-                0
-            </div>
-
-            <div class="counter-label">
-                Tage Routine abgeschlossen
-            </div>
-
-        </div>
-
-
-        <button
-            class="logout-button"
-            onclick="logout()"
-        >
-            Abmelden
+        <button class="primary" onclick="showNegativePattern()">
+          Weiter
         </button>
+      </div>
+    </div>
+  </div>
 
-    </section>
+  <!-- Energieauswahl -->
+  <div id="energyScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">⚡</div>
+        <h2>Wie viel Energie hast du heute?</h2>
+        <p>Wähle die passende Option für deinen heutigen Tag.</p>
+      </div>
 
+      <button
+        style="background:#f3d9df"
+        onclick="selectEnergy('low', this)"
+      >
+        🌸 Wenig Energie
+      </button>
 
+      <button
+        style="background:#dcecf4"
+        onclick="selectEnergy('high', this)"
+      >
+        ⚡ Viel Energie
+      </button>
 
-    <!-- =====================================================
-         MORGEN – ENERGIE CHECK
-         ===================================================== -->
+      <button class="back-button" onclick="showHome()">
+        ← Zur Startseite
+      </button>
+    </div>
+  </div>
 
-    <section id="morningScreen" class="screen">
+  <!-- Energie Ergebnis -->
+  <div id="energyResultScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">⏱️</div>
 
-        <div class="icon">
-            🌅
-        </div>
-
-        <div class="small-title">
-            Morgen Energie-Check
-        </div>
-
-        <h2>
-            Wie viel Energie hast du heute?
-        </h2>
-
-        <div class="buttons">
-
-            <button
-                class="level1"
-                onclick="selectEnergy(1)"
-            >
-                Level 1<br>
-                <small>Sehr wenig Energie</small>
-            </button>
-
-            <button
-                class="level2"
-                onclick="selectEnergy(2)"
-            >
-                Level 2<br>
-                <small>Wenig Energie</small>
-            </button>
-
-            <button
-                class="level3"
-                onclick="selectEnergy(3)"
-            >
-                Level 3<br>
-                <small>Normale Energie</small>
-            </button>
-
-            <button
-                class="level4"
-                onclick="selectEnergy(4)"
-            >
-                Level 4<br>
-                <small>Viel Energie</small>
-            </button>
-
-        </div>
-
-
-        <button
-            class="back-button"
-            onclick="goHome()"
-        >
-            ← Zurück
-        </button>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         MORGEN – FERTIG
-         ===================================================== -->
-
-    <section id="morningDoneScreen" class="screen">
+        <div id="energyResultText" class="info"></div>
 
         <div class="success">
-            ☀️
+          <strong>1 Zeiteinheit entspricht 15min Arbeit.</strong>
         </div>
 
-        <div class="small-title">
-            Morgen-Check abgeschlossen
+        <button class="primary" onclick="showNegativePattern()">
+          Weiter
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Negative Verhaltensmuster -->
+  <div id="negativePatternScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">🎯</div>
+
+        <h2>Heute</h2>
+
+        <div class="info">
+          Mache heute SR.
         </div>
 
-        <h2>
-            Guten Start in den Tag.
-        </h2>
+        <p>
+          Halte dich an das, was du dir für heute vorgenommen hast.
+        </p>
 
-        <div class="notebook">
+        <button class="primary" onclick="finishMorning()">
+          Morgen-Check abschließen
+        </button>
+      </div>
+    </div>
+  </div>
 
-            <strong>
-                📓 Deine Aufgaben
-            </strong>
+  <!-- Morgen abgeschlossen -->
+  <div id="morningCompleteScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">☀️</div>
 
-            Siehe dein Notizbuch für die Aufgaben,
-            die du am Abend zuvor definiert hast.
+        <h1>Morgen-Check abgeschlossen</h1>
 
-        </div>
+        <h2>Guten Start in den Tag.</h2>
 
+        <div class="divider"></div>
+
+        <h3>Deine Aufgaben</h3>
+
+        <p>
+          Siehe dein Notizbuch für die Aufgaben, die du am Abend zuvor
+          definiert hast.
+        </p>
 
         <div class="routine-counter">
-
-            <div
-                class="counter-number"
-                id="morningCounter"
-            >
-                0
-            </div>
-
-            <div class="counter-label">
-                Tage Routine abgeschlossen
-            </div>
-
+          <div id="morningCounter" class="counter-number">0</div>
+          <div class="counter-label">Tage Routine abgeschlossen</div>
         </div>
 
-
-        <button
-            class="back-button"
-            onclick="goHome()"
-        >
-            ← Zur Startseite
+        <button class="back-button" onclick="showHome()">
+          ← Zur Startseite
         </button>
+      </div>
+    </div>
+  </div>
 
-    </section>
+  <!-- Abend Start -->
+  <div id="eveningGoalScreen" class="screen">
+    <div class="card">
+      <div class="date-text" id="eveningDate"></div>
 
-
-
-    <!-- =====================================================
-         ABEND – CHECK IN
-         ===================================================== -->
-
-    <section id="eveningScreen" class="screen">
-
-        <div class="icon">
-            🌙
-        </div>
-
-        <div class="small-title">
-            Abend Check-in
-        </div>
-
-        <h2>
-            Wie war dein Tag?
-        </h2>
+      <div class="center">
+        <div class="icon">🌙</div>
+        <h1>Abend Check-in</h1>
 
         <div class="question">
-            Hast du heute an deinen Zielen gearbeitet?
+          Hast du deine Ziele bzw. Zeiteinheiten heute eingehalten?
         </div>
+      </div>
 
+      <button class="yes" onclick="selectGoalCompletion(true)">
+        ✅ Ja
+      </button>
 
-        <div class="buttons">
+      <button class="no" onclick="selectGoalCompletion(false)">
+        ❌ Nein
+      </button>
 
-            <button
-                class="yes"
-                onclick="saveEvening('Ja')"
-            >
-                ✅ Ja
-            </button>
+      <button class="back-button" onclick="showHome()">
+        ← Zur Startseite
+      </button>
+    </div>
+  </div>
 
-            <button
-                class="some"
-                onclick="saveEvening('Ein bisschen')"
-            >
-                🟡 Ein bisschen
-            </button>
-
-            <button
-                class="no"
-                onclick="saveEvening('Nein')"
-            >
-                ❌ Nein
-            </button>
-
-        </div>
-
-
-        <button
-            class="back-button"
-            onclick="goHome()"
-        >
-            ← Zurück
-        </button>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         ABEND – FERTIG
-         ===================================================== -->
-
-    <section id="eveningDoneScreen" class="screen">
+  <!-- Ergebnis Ziel: ja -->
+  <div id="goalYesScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">👏</div>
 
         <div class="success">
-            🌙
+          Sehr gut. Du kannst stolz auf dich sein.
         </div>
 
-        <div class="small-title">
-            Abend-Check-in abgeschlossen
+        <button class="primary" onclick="showNegativeHabitQuestion()">
+          Weiter
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ergebnis Ziel: nein -->
+  <div id="goalNoScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">📝</div>
+
+        <div class="info">
+          Woran hat es gelegen?<br><br>
+          Antwort in dein Notizheft eintragen.
         </div>
 
-        <h2>
-            Gut gemacht.
-        </h2>
+        <button class="primary" onclick="showNegativeHabitQuestion()">
+          Weiter
+        </button>
+      </div>
+    </div>
+  </div>
 
-        <div class="notebook">
+  <!-- Negative Gewohnheit -->
+  <div id="negativeHabitScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">🧠</div>
 
-            <strong>
-                📓 Ziele für morgen
-            </strong>
+        <div class="question">
+          Hast du heute die negative Gewohnheit vermieden?
+        </div>
+      </div>
 
-            Definiere deine Ziele für den nächsten Tag
-            in deinem Notizbuch.
+      <button class="yes" onclick="selectNegativeHabit(true)">
+        ✅ Ja
+      </button>
 
+      <button class="no" onclick="selectNegativeHabit(false)">
+        ❌ Nein
+      </button>
+    </div>
+  </div>
+
+  <!-- Negative Gewohnheit: ja -->
+  <div id="negativeHabitYesScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">🌱</div>
+
+        <div class="success">
+          Sehr gut. Du hast deine negative Gewohnheit heute vermieden.
+          Weiter so!
         </div>
 
+        <button class="primary" onclick="finishEvening()">
+          Abend-Check-in abschließen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Negative Gewohnheit: nein -->
+  <div id="negativeHabitNoScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">📝</div>
+
+        <div class="info">
+          Warum ist es passiert?<br><br>
+          Antwort in dein Notizheft eintragen.
+        </div>
+
+        <button class="primary" onclick="finishEvening()">
+          Abend-Check-in abschließen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Abend abgeschlossen -->
+  <div id="eveningCompleteScreen" class="screen">
+    <div class="card">
+      <div class="center">
+        <div class="icon">🌙</div>
+
+        <h1>Abend-Check-in abgeschlossen</h1>
+
+        <h2>Gut gemacht.</h2>
+
+        <div class="divider"></div>
+
+        <h3>🎯 Ziele für morgen</h3>
+
+        <p>
+          Definiere deine Ziele für den nächsten Tag in deinem Notizbuch.
+        </p>
 
         <div class="routine-counter">
-
-            <div
-                class="counter-number"
-                id="eveningCounter"
-            >
-                0
-            </div>
-
-            <div class="counter-label">
-                Tage Routine abgeschlossen
-            </div>
-
+          <div id="eveningCounter" class="counter-number">0</div>
+          <div class="counter-label">Tage Routine abgeschlossen</div>
         </div>
 
-
-        <button
-            class="back-button"
-            onclick="goHome()"
-        >
-            ← Zur Startseite
+        <button class="back-button" onclick="showHome()">
+          ← Zur Startseite
         </button>
+      </div>
+    </div>
+  </div>
 
-    </section>
-
-
-</main>
-
-
+</div>
 
 <script>
+  // ============================================================
+  // SUPABASE
+  // ============================================================
 
-/*
-==============================================================
-SUPABASE VERBINDUNG
-==============================================================
-*/
+  const SUPABASE_URL = "https://hfvgvpusjyttvwvjliwc.supabase.co";
 
-const SUPABASE_URL =
-    'https://hfvgvpusjyttvwvjliwc.supabase.co';
+  const SUPABASE_KEY =
+    "sb_publishable_9oft3xodu-9GlP0Lf1rrdw_UuTi5vq_";
 
-const SUPABASE_KEY =
-    'sb_publishable_9oft3xodu-9GlP0Lf1rrdw_UuTi5vq_';
-
-
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
 
+  // ============================================================
+  // APP STATE
+  // ============================================================
 
-/*
-==============================================================
-DATUM
-==============================================================
-*/
+  let currentUser = null;
 
-function getToday() {
+  let todayData = null;
 
-    const now = new Date();
+  let selectedGoalCompleted = null;
 
-    const year =
-        now.getFullYear();
-
-    const month =
-        String(now.getMonth() + 1).padStart(2, '0');
-
-    const day =
-        String(now.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-}
+  let selectedNegativeHabitAvoided = null;
 
 
+  // ============================================================
+  // START
+  // ============================================================
 
-/*
-==============================================================
-SCREEN MANAGEMENT
-==============================================================
-*/
+  document.addEventListener("DOMContentLoaded", initializeApp);
 
-function showScreen(screenId) {
 
-    const screens =
-        document.querySelectorAll('.screen');
+  async function initializeApp() {
+    try {
+      const {
+        data: { session }
+      } = await supabaseClient.auth.getSession();
 
-    screens.forEach(screen => {
+      if (session && session.user) {
+        currentUser = session.user;
+        await loadTodayData();
+        await showHome();
+      } else {
+        showScreen("loginScreen");
+      }
 
-        screen.classList.remove('active');
+      supabaseClient.auth.onAuthStateChange(async (_event, session) => {
+        if (session && session.user) {
+          currentUser = session.user;
+          await loadTodayData();
+          showHome();
+        } else {
+          currentUser = null;
+          showScreen("loginScreen");
+        }
+      });
 
-    });
-
-    const screen =
-        document.getElementById(screenId);
-
-    if (screen) {
-
-        screen.classList.add('active');
-
+    } catch (error) {
+      console.error(error);
+      showScreen("loginScreen");
     }
-
-    window.scrollTo(0, 0);
-
-}
+  }
 
 
+  // ============================================================
+  // LOGIN
+  // ============================================================
 
-function goHome() {
+  async function login() {
+    const email = document
+      .getElementById("emailInput")
+      .value
+      .trim();
 
-    updateCounters();
+    const password = document
+      .getElementById("passwordInput")
+      .value;
 
-    showScreen('homeScreen');
+    const errorBox = document.getElementById("loginError");
 
-}
-
-
-
-/*
-==============================================================
-LOGIN
-==============================================================
-*/
-
-async function login() {
-
-    const email =
-        document.getElementById('emailInput').value.trim();
-
-    const password =
-        document.getElementById('passwordInput').value;
-
-    const errorElement =
-        document.getElementById('loginError');
-
-    const loginButton =
-        document.getElementById('loginButton');
-
-
-    errorElement.style.display = 'none';
-
+    errorBox.innerHTML = "";
 
     if (!email || !password) {
-
-        errorElement.textContent =
-            'Bitte E-Mail-Adresse und Passwort eingeben.';
-
-        errorElement.style.display = 'block';
-
-        return;
-
+      errorBox.innerHTML =
+        '<div class="error">Bitte E-Mail und Passwort eingeben.</div>';
+      return;
     }
 
-
-    loginButton.disabled = true;
-    loginButton.textContent = 'Anmeldung läuft …';
-
-
-    const { error } =
+    try {
+      const { error } =
         await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
+          email,
+          password
         });
 
+      if (error) {
+        errorBox.innerHTML =
+          '<div class="error">' +
+          escapeHtml(error.message) +
+          "</div>";
+      }
 
-    loginButton.disabled = false;
-    loginButton.textContent = 'Anmelden';
+    } catch (error) {
+      console.error(error);
 
-
-    if (error) {
-
-        errorElement.textContent =
-            'Anmeldung fehlgeschlagen. Bitte E-Mail und Passwort prüfen.';
-
-        errorElement.style.display = 'block';
-
-        console.error(error);
-
-        return;
-
+      errorBox.innerHTML =
+        '<div class="error">Anmeldung fehlgeschlagen.</div>';
     }
+  }
 
 
-    await startApp();
-
-}
-
-
-
-/*
-==============================================================
-ABMELDEN
-==============================================================
-*/
-
-async function logout() {
-
+  async function logout() {
     await supabaseClient.auth.signOut();
-
-    showScreen('loginScreen');
-
-}
-
-
-
-/*
-==============================================================
-AKTUELLEN BENUTZER HOLEN
-==============================================================
-*/
-
-async function getCurrentUser() {
-
-    const {
-        data,
-        error
-    } = await supabaseClient.auth.getUser();
-
-
-    if (error) {
-
-        console.error(error);
-
-        return null;
-
-    }
-
-
-    return data.user;
-
-}
-
-
-
-/*
-==============================================================
-HEUTIGEN TAG AUS SUPABASE LADEN
-==============================================================
-*/
-
-async function getTodayData() {
-
-    const user =
-        await getCurrentUser();
-
-    if (!user) {
-
-        return null;
-
-    }
-
-
-    const today =
-        getToday();
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from('routine_days')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('date', today)
-        .maybeSingle();
-
-
-    if (error) {
-
-        console.error(error);
-
-        return null;
-
-    }
-
-
-    return data;
-
-}
-
-
-
-/*
-==============================================================
-TAG ANLEGEN ODER AKTUALISIEREN
-==============================================================
-*/
-
-async function saveTodayData(changes) {
-
-    const user =
-        await getCurrentUser();
-
-    if (!user) {
-
-        return null;
-
-    }
-
-
-    const today =
-        getToday();
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from('routine_days')
-        .upsert(
-            {
-                user_id: user.id,
-                date: today,
-                ...changes
-            },
-            {
-                onConflict: 'user_id,date'
-            }
-        )
-        .select()
-        .single();
-
-
-    if (error) {
-
-        console.error(error);
-
-        alert(
-            'Die Daten konnten nicht gespeichert werden.'
-        );
-
-        return null;
-
-    }
-
-
-    return data;
-
-}
-
-
-
-/*
-==============================================================
-ALLE ABGESCHLOSSENEN TAGE LADEN
-==============================================================
-*/
-
-async function getCompletedDays() {
-
-    const user =
-        await getCurrentUser();
-
-    if (!user) {
-
-        return [];
-
-    }
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from('routine_days')
-        .select('date, morning_done, evening_done')
-        .eq('user_id', user.id)
-        .eq('morning_done', true)
-        .eq('evening_done', true)
-        .order('date', {
-            ascending: false
-        });
-
-
-    if (error) {
-
-        console.error(error);
-
-        return [];
-
-    }
-
-
-    return data || [];
-
-}
-
-
-
-/*
-==============================================================
-ROUTINE COUNTER BERECHNEN
-==============================================================
-*/
-
-function calculateRoutineCounter(days) {
-
-    if (!days.length) {
-
-        return 0;
-
-    }
-
-
-    const dates =
-        days.map(day => day.date);
-
-
-    let counter = 1;
-
-
-    for (let i = 1; i < dates.length; i++) {
-
-        const current =
-            new Date(
-                dates[i - 1] + 'T00:00:00'
-            );
-
-        const previous =
-            new Date(
-                dates[i] + 'T00:00:00'
-            );
-
-
-        const difference =
-            (
-                current.getTime() -
-                previous.getTime()
-            ) /
-            (
-                1000 * 60 * 60 * 24
-            );
-
-
-        if (difference === 1) {
-
-            counter++;
-
-        } else {
-
-            break;
-
-        }
-
-    }
-
-
-    return counter;
-
-}
-
-
-
-/*
-==============================================================
-COUNTER ANZEIGEN
-==============================================================
-*/
-
-async function updateCounters() {
-
-    const days =
-        await getCompletedDays();
-
-
-    const counter =
-        calculateRoutineCounter(days);
-
-
-    const elements = [
-        'homeCounter',
-        'morningCounter',
-        'eveningCounter'
-    ];
-
-
-    elements.forEach(id => {
-
-        const element =
-            document.getElementById(id);
-
-        if (element) {
-
-            element.textContent = counter;
-
-        }
-
+    currentUser = null;
+    todayData = null;
+    showScreen("loginScreen");
+  }
+
+
+  // ============================================================
+  // SCREEN NAVIGATION
+  // ============================================================
+
+  function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(screen => {
+      screen.classList.remove("active");
     });
 
-}
+    const screen = document.getElementById(id);
+
+    if (screen) {
+      screen.classList.add("active");
+      window.scrollTo(0, 0);
+    }
+  }
 
 
-
-/*
-==============================================================
-STARTSEITE
-==============================================================
-*/
-
-async function openMorning() {
-
-    const today =
-        await getTodayData();
+  async function showHome() {
+    await loadTodayData();
+    await updateAllCounters();
+    showScreen("homeScreen");
+  }
 
 
-    if (
-        today &&
-        today.morning_done
-    ) {
+  // ============================================================
+  // DATE
+  // ============================================================
 
-        await updateCounters();
+  function getTodayString() {
+    const now = new Date();
 
-        showScreen(
-            'morningDoneScreen'
-        );
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
 
-        return;
+    return `${year}-${month}-${day}`;
+  }
 
+
+  function getFormattedDate() {
+    return new Date().toLocaleDateString("de-DE", {
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+  }
+
+
+  // ============================================================
+  // SUPABASE DATA
+  // ============================================================
+
+  async function loadTodayData() {
+    if (!currentUser) return null;
+
+    const today = getTodayString();
+
+    const { data, error } = await supabaseClient
+      .from("routine_days")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .eq("date", today)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Fehler beim Laden:", error);
+      return null;
     }
 
+    todayData = data || null;
 
-    showScreen(
-        'morningScreen'
-    );
-
-}
+    return todayData;
+  }
 
 
+  async function ensureTodayRow() {
+    if (!currentUser) return null;
 
-async function openEvening() {
+    const today = getTodayString();
 
-    const today =
-        await getTodayData();
-
-
-    if (
-        today &&
-        today.evening_done
-    ) {
-
-        await updateCounters();
-
-        showScreen(
-            'eveningDoneScreen'
-        );
-
-        return;
-
+    if (todayData) {
+      return todayData;
     }
 
+    const { data, error } = await supabaseClient
+      .from("routine_days")
+      .insert({
+        user_id: currentUser.id,
+        date: today
+      })
+      .select()
+      .single();
 
-    showScreen(
-        'eveningScreen'
-    );
+    if (error) {
+      // Falls die Zeile inzwischen bereits existiert,
+      // noch einmal laden.
+      await loadTodayData();
 
-}
+      return todayData;
+    }
+
+    todayData = data;
+
+    return todayData;
+  }
 
 
+  async function updateToday(values) {
+    if (!currentUser) return false;
 
-/*
-==============================================================
-MORGEN ENERGY CHECK
-==============================================================
-*/
+    await ensureTodayRow();
 
-async function selectEnergy(level) {
+    const { data, error } = await supabaseClient
+      .from("routine_days")
+      .update({
+        ...values,
+        updated_at: new Date().toISOString()
+      })
+      .eq("user_id", currentUser.id)
+      .eq("date", getTodayString())
+      .select()
+      .single();
 
-    const button =
-        event?.currentTarget;
+    if (error) {
+      console.error("Fehler beim Speichern:", error);
+      alert("Die Daten konnten nicht gespeichert werden.");
+      return false;
+    }
 
+    todayData = data;
+
+    return true;
+  }
+
+
+  // ============================================================
+  // MORNING
+  // ============================================================
+
+  async function openMorning() {
+    await loadTodayData();
+
+    document.getElementById("morningDate").textContent =
+      getFormattedDate();
+
+    if (todayData && todayData.morning_done) {
+      updateCompletionCounters();
+      showScreen("morningCompleteScreen");
+      return;
+    }
+
+    showScreen("morningTypeScreen");
+  }
+
+
+  async function selectDayType(type) {
+    if (type === "workday") {
+      showScreen("workdayScreen");
+      return;
+    }
+
+    if (type === "normal") {
+      showScreen("energyScreen");
+    }
+  }
+
+
+  async function selectEnergy(level, button) {
+    if (button) {
+      button.disabled = true;
+    }
+
+    let success = false;
+
+    if (level === "low") {
+      success = await updateToday({
+        energy_level: 1
+      });
+
+      if (success) {
+        document.getElementById("energyResultText").innerHTML =
+          "Heute musst du nur <strong>1 Zeiteinheit</strong> erledigen." +
+          "<br><br>" +
+          "Aufgaben siehe Notizbuch.";
+      }
+    }
+
+    if (level === "high") {
+      success = await updateToday({
+        energy_level: 4
+      });
+
+      if (success) {
+        document.getElementById("energyResultText").innerHTML =
+          "Heute musst du <strong>4 Zeiteinheiten</strong> erledigen." +
+          "<br><br>" +
+          "Aufgaben siehe Notizbuch.";
+      }
+    }
+
+    if (success) {
+      showScreen("energyResultScreen");
+    }
 
     if (button) {
+      button.disabled = false;
+    }
+  }
 
-        button.disabled = true;
 
+  function showNegativePattern() {
+    showScreen("negativePatternScreen");
+  }
+
+
+  async function finishMorning() {
+    const success = await updateToday({
+      morning_done: true
+    });
+
+    if (!success) return;
+
+    await loadTodayData();
+    await updateAllCounters();
+    updateCompletionCounters();
+
+    showScreen("morningCompleteScreen");
+  }
+
+
+  // ============================================================
+  // EVENING
+  // ============================================================
+
+  async function openEvening() {
+    await loadTodayData();
+
+    document.getElementById("eveningDate").textContent =
+      getFormattedDate();
+
+    if (todayData && todayData.evening_done) {
+      updateCompletionCounters();
+      showScreen("eveningCompleteScreen");
+      return;
     }
 
+    selectedGoalCompleted = null;
+    selectedNegativeHabitAvoided = null;
 
-    const saved =
-        await saveTodayData({
-            energy_level: level,
-            morning_done: true
-        });
-
-
-    if (!saved) {
-
-        if (button) {
-
-            button.disabled = false;
-
-        }
-
-        return;
-
-    }
+    showScreen("eveningGoalScreen");
+  }
 
 
-    await updateCounters();
+  function selectGoalCompletion(value) {
+    selectedGoalCompleted = value;
 
-    showScreen(
-        'morningDoneScreen'
-    );
-
-}
-
-
-
-/*
-==============================================================
-ABEND CHECK-IN
-==============================================================
-*/
-
-async function saveEvening(answer) {
-
-    const button =
-        event?.currentTarget;
-
-
-    if (button) {
-
-        button.disabled = true;
-
-    }
-
-
-    const saved =
-        await saveTodayData({
-            evening_answer: answer,
-            evening_done: true
-        });
-
-
-    if (!saved) {
-
-        if (button) {
-
-            button.disabled = false;
-
-        }
-
-        return;
-
-    }
-
-
-    await updateCounters();
-
-    showScreen(
-        'eveningDoneScreen'
-    );
-
-}
-
-
-
-/*
-==============================================================
-APP STARTEN
-==============================================================
-*/
-
-async function startApp() {
-
-    const user =
-        await getCurrentUser();
-
-
-    if (!user) {
-
-        showScreen('loginScreen');
-
-        return;
-
-    }
-
-
-    showScreen('homeScreen');
-
-    await updateCounters();
-
-}
-
-
-
-/*
-==============================================================
-BEIM ÖFFNEN PRÜFEN
-==============================================================
-*/
-
-async function initializeApp() {
-
-    const {
-        data
-    } = await supabaseClient.auth.getSession();
-
-
-    if (
-        data &&
-        data.session
-    ) {
-
-        await startApp();
-
+    if (value === true) {
+      showScreen("goalYesScreen");
     } else {
+      showScreen("goalNoScreen");
+    }
+  }
 
-        showScreen('loginScreen');
 
+  function showNegativeHabitQuestion() {
+    showScreen("negativeHabitScreen");
+  }
+
+
+  function selectNegativeHabit(value) {
+    selectedNegativeHabitAvoided = value;
+
+    if (value === true) {
+      showScreen("negativeHabitYesScreen");
+    } else {
+      showScreen("negativeHabitNoScreen");
+    }
+  }
+
+
+  async function finishEvening() {
+    const success = await updateToday({
+      goal_completed: selectedGoalCompleted,
+      negative_habit_avoided: selectedNegativeHabitAvoided,
+      evening_done: true
+    });
+
+    if (!success) return;
+
+    await loadTodayData();
+    await updateAllCounters();
+    updateCompletionCounters();
+
+    showScreen("eveningCompleteScreen");
+  }
+
+
+  // ============================================================
+  // ROUTINE COUNTER
+  // ============================================================
+
+  async function calculateRoutineCounter() {
+    if (!currentUser) return 0;
+
+    const { data, error } = await supabaseClient
+      .from("routine_days")
+      .select("date, morning_done, evening_done")
+      .eq("user_id", currentUser.id)
+      .eq("morning_done", true)
+      .eq("evening_done", true)
+      .order("date", { ascending: false });
+
+    if (error) {
+      console.error("Counter-Fehler:", error);
+      return 0;
     }
 
-}
+    if (!data || data.length === 0) {
+      return 0;
+    }
+
+    let streak = 0;
+
+    const today = new Date(getTodayString() + "T00:00:00");
+
+    const firstDate = new Date(data[0].date + "T00:00:00");
+
+    const firstDifference =
+      Math.round(
+        (today - firstDate) / (1000 * 60 * 60 * 24)
+      );
+
+    // Wenn der letzte vollständige Tag länger als gestern zurückliegt,
+    // ist die aktuelle Serie beendet.
+    if (firstDifference > 1) {
+      return 0;
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      const currentDate =
+        new Date(data[i].date + "T00:00:00");
+
+      if (i === 0) {
+        streak = 1;
+        continue;
+      }
+
+      const previousDate =
+        new Date(data[i - 1].date + "T00:00:00");
+
+      const difference =
+        Math.round(
+          (previousDate - currentDate) /
+          (1000 * 60 * 60 * 24)
+        );
+
+      if (difference === 1) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  }
 
 
-initializeApp();
+  async function updateAllCounters() {
+    const counter = await calculateRoutineCounter();
+
+    document.getElementById("counterNumber").textContent =
+      counter;
+
+    document.getElementById("morningCounter").textContent =
+      counter;
+
+    document.getElementById("eveningCounter").textContent =
+      counter;
+
+    return counter;
+  }
+
+
+  function updateCompletionCounters() {
+    const number =
+      document.getElementById("counterNumber").textContent;
+
+    document.getElementById("morningCounter").textContent =
+      number;
+
+    document.getElementById("eveningCounter").textContent =
+      number;
+  }
+
+
+  // ============================================================
+  // SECURITY / HTML
+  // ============================================================
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
 </script>
 
