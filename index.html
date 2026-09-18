@@ -117,10 +117,6 @@
       background: #dcefdc;
     }
 
-    button.some {
-      background: #f8edc4;
-    }
-
     button.no {
       background: #f3d8d8;
     }
@@ -150,6 +146,18 @@
     .counter-label {
       color: #77736d;
       font-size: 15px;
+    }
+
+    .routine-motivation {
+      text-align: center;
+      margin-top: 18px;
+      padding: 17px;
+      border-radius: 18px;
+      background: #eeeae3;
+      color: #5f5b54;
+      line-height: 1.5;
+      font-size: 15px;
+      font-weight: 500;
     }
 
     input {
@@ -234,6 +242,35 @@
       color: #8a857e;
       margin-bottom: 20px;
     }
+
+    /* Motivationstext */
+    .motivation-text {
+      text-align: left;
+      font-size: 18px;
+      line-height: 1.65;
+      color: #403d38;
+    }
+
+    .motivation-text p {
+      margin: 0 0 18px;
+      color: #403d38;
+    }
+
+    .motivation-text p:last-child {
+      margin-bottom: 0;
+      font-weight: 600;
+    }
+
+    .reading-count {
+      text-align: center;
+      font-size: 14px;
+      color: #8a857e;
+      margin-top: 22px;
+    }
+
+    .continue-button {
+      margin-top: 22px;
+    }
   </style>
 </head>
 
@@ -248,6 +285,7 @@
       <p>Mein Routine System wird geladen …</p>
     </div>
   </div>
+
 
   <!-- Login -->
   <div id="loginScreen" class="screen">
@@ -280,13 +318,17 @@
     </div>
   </div>
 
+
   <!-- Startseite -->
   <div id="homeScreen" class="screen">
     <div class="card">
       <div class="center">
         <div class="icon">🌿</div>
+
         <h1>Deine tägliche Routine</h1>
+
         <h2>Was steht an?</h2>
+
         <p>
           Nimm dir kurz Zeit für deinen Morgen oder für deinen Abend.
         </p>
@@ -302,7 +344,14 @@
 
       <div class="routine-counter">
         <div id="counterNumber" class="counter-number">0</div>
-        <div class="counter-label">Tage Routine abgeschlossen</div>
+        <div class="counter-label">
+          Tage Routine abgeschlossen
+        </div>
+      </div>
+
+      <div class="routine-motivation">
+        🌱 Bleib dran.<br>
+        Kein Tag ohne einen kleinen Schritt nach vorne.
       </div>
 
       <button class="logout" onclick="logout()">
@@ -310,6 +359,7 @@
       </button>
     </div>
   </div>
+
 
   <!-- Morgen: Arbeitstag oder normaler Tag -->
   <div id="morningTypeScreen" class="screen">
@@ -336,17 +386,19 @@
     </div>
   </div>
 
+
   <!-- Arbeitstag Hinweis -->
   <div id="workdayScreen" class="screen">
     <div class="card">
       <div class="center">
         <div class="icon">💼</div>
+
         <h2>Arbeitstag</h2>
 
         <div class="info">
           Viel Spaß bei der Arbeit.<br><br>
-          Heute müssen nur die wichtigsten Aufgaben zusätzlich zur Arbeit
-          erledigt werden.
+          Heute müssen nur die wichtigsten Aufgaben zusätzlich
+          zur Arbeit erledigt werden.
         </div>
 
         <button class="primary" onclick="showNegativePattern()">
@@ -356,13 +408,18 @@
     </div>
   </div>
 
+
   <!-- Energieauswahl -->
   <div id="energyScreen" class="screen">
     <div class="card">
       <div class="center">
         <div class="icon">⚡</div>
+
         <h2>Wie viel Energie hast du heute?</h2>
-        <p>Wähle die passende Option für deinen heutigen Tag.</p>
+
+        <p>
+          Wähle die passende Option für deinen heutigen Tag.
+        </p>
       </div>
 
       <button
@@ -385,6 +442,7 @@
     </div>
   </div>
 
+
   <!-- Energie Ergebnis -->
   <div id="energyResultScreen" class="screen">
     <div class="card">
@@ -404,7 +462,8 @@
     </div>
   </div>
 
-  <!-- Negative Verhaltensmuster -->
+
+  <!-- Negatives Verhaltensmuster -->
   <div id="negativePatternScreen" class="screen">
     <div class="card">
       <div class="center">
@@ -427,6 +486,7 @@
     </div>
   </div>
 
+
   <!-- Morgen abgeschlossen -->
   <div id="morningCompleteScreen" class="screen">
     <div class="card">
@@ -442,21 +502,77 @@
         <h3>Deine Aufgaben</h3>
 
         <p>
-          Siehe dein Notizbuch für die Aufgaben, die du am Abend zuvor
-          definiert hast.
+          Siehe dein Notizbuch für die Aufgaben, die du am Abend
+          zuvor definiert hast.
         </p>
 
         <div class="routine-counter">
           <div id="morningCounter" class="counter-number">0</div>
-          <div class="counter-label">Tage Routine abgeschlossen</div>
+          <div class="counter-label">
+            Tage Routine abgeschlossen
+          </div>
         </div>
 
-        <button class="back-button" onclick="showHome()">
-          ← Zur Startseite
+        <button class="primary" onclick="startMorningReading()">
+          Weiter
         </button>
       </div>
     </div>
   </div>
+
+
+  <!-- Morgen Motivationstext -->
+  <div id="morningReadingScreen" class="screen">
+    <div class="card">
+
+      <div class="center">
+        <div class="icon">📖</div>
+        <h2>Deine tägliche Erinnerung</h2>
+      </div>
+
+      <div class="motivation-text">
+        <p>
+          Ich will ein selbstbestimmtes Leben führen und ich werde
+          alles Notwendige dafür tun.
+        </p>
+
+        <p>
+          Meine drei großen Ziele sind: meine Lebensspanne so weit
+          wie möglich zu verlängern, finanzielle Freiheit zu erreichen
+          und meine mentale Stärke und Handlungsfähigkeit immer weiter
+          auszubauen.
+        </p>
+
+        <p>
+          Diese Ziele sind langfristig. Deshalb arbeite ich jeden Tag
+          daran, auch wenn es manchmal nur ein kleiner Schritt ist.
+        </p>
+
+        <p>
+          Es wird Rückschläge und Zeiten geben, in denen es schwierig
+          wird. Das gehört dazu. Ich gebe nicht auf, ich lerne daraus
+          und mache weiter.
+        </p>
+
+        <p>
+          Kein Tag ohne einen kleinen Schritt nach vorne.
+        </p>
+      </div>
+
+      <div id="morningReadingCount" class="reading-count">
+        Lesen 1 von 3
+      </div>
+
+      <button
+        class="primary continue-button"
+        onclick="continueMorningReading()"
+      >
+        Weiter
+      </button>
+
+    </div>
+  </div>
+
 
   <!-- Abend Start -->
   <div id="eveningGoalScreen" class="screen">
@@ -465,6 +581,7 @@
 
       <div class="center">
         <div class="icon">🌙</div>
+
         <h1>Abend Check-in</h1>
 
         <div class="question">
@@ -486,7 +603,8 @@
     </div>
   </div>
 
-  <!-- Ergebnis Ziel: ja -->
+
+  <!-- Ziel: Ja -->
   <div id="goalYesScreen" class="screen">
     <div class="card">
       <div class="center">
@@ -503,7 +621,8 @@
     </div>
   </div>
 
-  <!-- Ergebnis Ziel: nein -->
+
+  <!-- Ziel: Nein -->
   <div id="goalNoScreen" class="screen">
     <div class="card">
       <div class="center">
@@ -520,6 +639,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- Negative Gewohnheit -->
   <div id="negativeHabitScreen" class="screen">
@@ -542,15 +662,16 @@
     </div>
   </div>
 
-  <!-- Negative Gewohnheit: ja -->
+
+  <!-- Negative Gewohnheit: Ja -->
   <div id="negativeHabitYesScreen" class="screen">
     <div class="card">
       <div class="center">
         <div class="icon">🌱</div>
 
         <div class="success">
-          Sehr gut. Du hast deine negative Gewohnheit heute vermieden.
-          Weiter so!
+          Sehr gut. Du hast deine negative Gewohnheit heute
+          vermieden. Weiter so!
         </div>
 
         <button class="primary" onclick="finishEvening()">
@@ -560,7 +681,8 @@
     </div>
   </div>
 
-  <!-- Negative Gewohnheit: nein -->
+
+  <!-- Negative Gewohnheit: Nein -->
   <div id="negativeHabitNoScreen" class="screen">
     <div class="card">
       <div class="center">
@@ -578,6 +700,7 @@
     </div>
   </div>
 
+
   <!-- Abend abgeschlossen -->
   <div id="eveningCompleteScreen" class="screen">
     <div class="card">
@@ -593,37 +716,97 @@
         <h3>🎯 Ziele für morgen</h3>
 
         <p>
-          Definiere deine Ziele für den nächsten Tag in deinem Notizbuch.
+          Definiere deine Ziele für den nächsten Tag in deinem
+          Notizbuch.
         </p>
 
         <div class="routine-counter">
           <div id="eveningCounter" class="counter-number">0</div>
-          <div class="counter-label">Tage Routine abgeschlossen</div>
+          <div class="counter-label">
+            Tage Routine abgeschlossen
+          </div>
         </div>
 
-        <button class="back-button" onclick="showHome()">
-          ← Zur Startseite
+        <button class="primary" onclick="startEveningReading()">
+          Weiter
         </button>
       </div>
     </div>
   </div>
 
+
+  <!-- Abend Motivationstext -->
+  <div id="eveningReadingScreen" class="screen">
+    <div class="card">
+
+      <div class="center">
+        <div class="icon">📖</div>
+        <h2>Deine tägliche Erinnerung</h2>
+      </div>
+
+      <div class="motivation-text">
+        <p>
+          Ich will ein selbstbestimmtes Leben führen und ich werde
+          alles Notwendige dafür tun.
+        </p>
+
+        <p>
+          Meine drei großen Ziele sind: meine Lebensspanne so weit
+          wie möglich zu verlängern, finanzielle Freiheit zu erreichen
+          und meine mentale Stärke und Handlungsfähigkeit immer weiter
+          auszubauen.
+        </p>
+
+        <p>
+          Diese Ziele sind langfristig. Deshalb arbeite ich jeden Tag
+          daran, auch wenn es manchmal nur ein kleiner Schritt ist.
+        </p>
+
+        <p>
+          Es wird Rückschläge und Zeiten geben, in denen es schwierig
+          wird. Das gehört dazu. Ich gebe nicht auf, ich lerne daraus
+          und mache weiter.
+        </p>
+
+        <p>
+          Kein Tag ohne einen kleinen Schritt nach vorne.
+        </p>
+      </div>
+
+      <div id="eveningReadingCount" class="reading-count">
+        Lesen 1 von 3
+      </div>
+
+      <button
+        class="primary continue-button"
+        onclick="continueEveningReading()"
+      >
+        Weiter
+      </button>
+
+    </div>
+  </div>
+
 </div>
 
+
 <script>
+
   // ============================================================
   // SUPABASE
   // ============================================================
 
-  const SUPABASE_URL = "https://hfvgvpusjyttvwvjliwc.supabase.co";
+  const SUPABASE_URL =
+    "https://hfvgvpusjyttvwvjliwc.supabase.co";
 
   const SUPABASE_KEY =
     "sb_publishable_9oft3xodu-9GlP0Lf1rrdw_UuTi5vq_";
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
 
   // ============================================================
@@ -631,50 +814,79 @@
   // ============================================================
 
   let currentUser = null;
-
   let todayData = null;
 
   let selectedGoalCompleted = null;
-
   let selectedNegativeHabitAvoided = null;
+
+  let morningReadingCount = 0;
+  let eveningReadingCount = 0;
 
 
   // ============================================================
   // START
   // ============================================================
 
-  document.addEventListener("DOMContentLoaded", initializeApp);
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializeApp
+  );
 
 
   async function initializeApp() {
+
     try {
+
       const {
         data: { session }
       } = await supabaseClient.auth.getSession();
 
       if (session && session.user) {
+
         currentUser = session.user;
+
         await loadTodayData();
+
         await showHome();
+
       } else {
+
         showScreen("loginScreen");
+
       }
 
-      supabaseClient.auth.onAuthStateChange(async (_event, session) => {
-        if (session && session.user) {
-          currentUser = session.user;
-          await loadTodayData();
-          showHome();
-        } else {
-          currentUser = null;
-          showScreen("loginScreen");
+
+      supabaseClient.auth.onAuthStateChange(
+        async (_event, session) => {
+
+          if (session && session.user) {
+
+            currentUser = session.user;
+
+            await loadTodayData();
+
+            showHome();
+
+          } else {
+
+            currentUser = null;
+            todayData = null;
+
+            showScreen("loginScreen");
+
+          }
+
         }
-      });
+      );
 
     } catch (error) {
+
       console.error(error);
+
       showScreen("loginScreen");
+
     }
+
   }
 
 
@@ -683,53 +895,77 @@
   // ============================================================
 
   async function login() {
-    const email = document
-      .getElementById("emailInput")
-      .value
-      .trim();
 
-    const password = document
-      .getElementById("passwordInput")
-      .value;
+    const email =
+      document
+        .getElementById("emailInput")
+        .value
+        .trim();
 
-    const errorBox = document.getElementById("loginError");
+    const password =
+      document
+        .getElementById("passwordInput")
+        .value;
+
+    const errorBox =
+      document.getElementById("loginError");
 
     errorBox.innerHTML = "";
 
+
     if (!email || !password) {
+
       errorBox.innerHTML =
-        '<div class="error">Bitte E-Mail und Passwort eingeben.</div>';
+        '<div class="error">' +
+        'Bitte E-Mail und Passwort eingeben.' +
+        '</div>';
+
       return;
+
     }
 
+
     try {
+
       const { error } =
         await supabaseClient.auth.signInWithPassword({
           email,
           password
         });
 
+
       if (error) {
+
         errorBox.innerHTML =
           '<div class="error">' +
           escapeHtml(error.message) +
-          "</div>";
+          '</div>';
+
       }
 
     } catch (error) {
+
       console.error(error);
 
       errorBox.innerHTML =
-        '<div class="error">Anmeldung fehlgeschlagen.</div>';
+        '<div class="error">' +
+        'Anmeldung fehlgeschlagen.' +
+        '</div>';
+
     }
+
   }
 
 
   async function logout() {
+
     await supabaseClient.auth.signOut();
+
     currentUser = null;
     todayData = null;
+
     showScreen("loginScreen");
+
   }
 
 
@@ -738,23 +974,37 @@
   // ============================================================
 
   function showScreen(id) {
-    document.querySelectorAll(".screen").forEach(screen => {
-      screen.classList.remove("active");
-    });
 
-    const screen = document.getElementById(id);
+    document
+      .querySelectorAll(".screen")
+      .forEach(screen => {
+        screen.classList.remove("active");
+      });
+
+
+    const screen =
+      document.getElementById(id);
+
 
     if (screen) {
+
       screen.classList.add("active");
+
       window.scrollTo(0, 0);
+
     }
+
   }
 
 
   async function showHome() {
+
     await loadTodayData();
+
     await updateAllCounters();
+
     showScreen("homeScreen");
+
   }
 
 
@@ -763,23 +1013,38 @@
   // ============================================================
 
   function getTodayString() {
+
     const now = new Date();
 
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
+    const year =
+      now.getFullYear();
+
+    const month =
+      String(now.getMonth() + 1)
+        .padStart(2, "0");
+
+    const day =
+      String(now.getDate())
+        .padStart(2, "0");
+
 
     return `${year}-${month}-${day}`;
+
   }
 
 
   function getFormattedDate() {
-    return new Date().toLocaleDateString("de-DE", {
-      weekday: "long",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    });
+
+    return new Date().toLocaleDateString(
+      "de-DE",
+      {
+        weekday: "long",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      }
+    );
+
   }
 
 
@@ -788,38 +1053,66 @@
   // ============================================================
 
   async function loadTodayData() {
+
     if (!currentUser) return null;
 
-    const today = getTodayString();
 
-    const { data, error } = await supabaseClient
+    const today =
+      getTodayString();
+
+
+    const {
+      data,
+      error
+    } = await supabaseClient
       .from("routine_days")
       .select("*")
       .eq("user_id", currentUser.id)
       .eq("date", today)
       .maybeSingle();
 
+
     if (error) {
-      console.error("Fehler beim Laden:", error);
+
+      console.error(
+        "Fehler beim Laden:",
+        error
+      );
+
       return null;
+
     }
 
-    todayData = data || null;
+
+    todayData =
+      data || null;
+
 
     return todayData;
+
   }
 
 
   async function ensureTodayRow() {
+
     if (!currentUser) return null;
 
-    const today = getTodayString();
+
+    const today =
+      getTodayString();
+
 
     if (todayData) {
+
       return todayData;
+
     }
 
-    const { data, error } = await supabaseClient
+
+    const {
+      data,
+      error
+    } = await supabaseClient
       .from("routine_days")
       .insert({
         user_id: currentUser.id,
@@ -828,45 +1121,69 @@
       .select()
       .single();
 
+
     if (error) {
-      // Falls die Zeile inzwischen bereits existiert,
-      // noch einmal laden.
+
       await loadTodayData();
 
       return todayData;
+
     }
+
 
     todayData = data;
 
     return todayData;
+
   }
 
 
   async function updateToday(values) {
-    if (!currentUser) return false;
+
+    if (!currentUser) {
+      return false;
+    }
+
 
     await ensureTodayRow();
 
-    const { data, error } = await supabaseClient
+
+    const {
+      data,
+      error
+    } = await supabaseClient
       .from("routine_days")
       .update({
         ...values,
-        updated_at: new Date().toISOString()
+        updated_at:
+          new Date().toISOString()
       })
       .eq("user_id", currentUser.id)
       .eq("date", getTodayString())
       .select()
       .single();
 
+
     if (error) {
-      console.error("Fehler beim Speichern:", error);
-      alert("Die Daten konnten nicht gespeichert werden.");
+
+      console.error(
+        "Fehler beim Speichern:",
+        error
+      );
+
+      alert(
+        "Die Daten konnten nicht gespeichert werden."
+      );
+
       return false;
+
     }
+
 
     todayData = data;
 
     return true;
+
   }
 
 
@@ -875,93 +1192,230 @@
   // ============================================================
 
   async function openMorning() {
+
     await loadTodayData();
 
-    document.getElementById("morningDate").textContent =
+
+    document.getElementById(
+      "morningDate"
+    ).textContent =
       getFormattedDate();
 
-    if (todayData && todayData.morning_done) {
+
+    if (
+      todayData &&
+      todayData.morning_done
+    ) {
+
+      await updateAllCounters();
+
       updateCompletionCounters();
-      showScreen("morningCompleteScreen");
+
+      showScreen(
+        "morningCompleteScreen"
+      );
+
       return;
+
     }
 
-    showScreen("morningTypeScreen");
+
+    showScreen(
+      "morningTypeScreen"
+    );
+
   }
 
 
   async function selectDayType(type) {
+
     if (type === "workday") {
-      showScreen("workdayScreen");
+
+      showScreen(
+        "workdayScreen"
+      );
+
       return;
+
     }
 
+
     if (type === "normal") {
-      showScreen("energyScreen");
+
+      showScreen(
+        "energyScreen"
+      );
+
     }
+
   }
 
 
-  async function selectEnergy(level, button) {
+  async function selectEnergy(
+    level,
+    button
+  ) {
+
     if (button) {
       button.disabled = true;
     }
 
+
     let success = false;
 
+
     if (level === "low") {
-      success = await updateToday({
-        energy_level: 1
-      });
+
+      success =
+        await updateToday({
+          energy_level: 1
+        });
+
 
       if (success) {
-        document.getElementById("energyResultText").innerHTML =
-          "Heute musst du nur <strong>1 Zeiteinheit</strong> erledigen." +
+
+        document.getElementById(
+          "energyResultText"
+        ).innerHTML =
+          "Heute musst du nur " +
+          "<strong>1 Zeiteinheit</strong> " +
+          "erledigen." +
           "<br><br>" +
           "Aufgaben siehe Notizbuch.";
+
       }
+
     }
+
 
     if (level === "high") {
-      success = await updateToday({
-        energy_level: 4
-      });
+
+      success =
+        await updateToday({
+          energy_level: 4
+        });
+
 
       if (success) {
-        document.getElementById("energyResultText").innerHTML =
-          "Heute musst du <strong>4 Zeiteinheiten</strong> erledigen." +
+
+        document.getElementById(
+          "energyResultText"
+        ).innerHTML =
+          "Heute musst du " +
+          "<strong>4 Zeiteinheiten</strong> " +
+          "erledigen." +
           "<br><br>" +
           "Aufgaben siehe Notizbuch.";
+
       }
+
     }
+
 
     if (success) {
-      showScreen("energyResultScreen");
+
+      showScreen(
+        "energyResultScreen"
+      );
+
     }
 
+
     if (button) {
+
       button.disabled = false;
+
     }
+
   }
 
 
   function showNegativePattern() {
-    showScreen("negativePatternScreen");
+
+    showScreen(
+      "negativePatternScreen"
+    );
+
   }
 
 
   async function finishMorning() {
-    const success = await updateToday({
-      morning_done: true
-    });
 
-    if (!success) return;
+    const success =
+      await updateToday({
+        morning_done: true
+      });
+
+
+    if (!success) {
+      return;
+    }
+
 
     await loadTodayData();
+
     await updateAllCounters();
+
     updateCompletionCounters();
 
-    showScreen("morningCompleteScreen");
+
+    showScreen(
+      "morningCompleteScreen"
+    );
+
+  }
+
+
+  // ============================================================
+  // MORNING READING - 3 MAL
+  // ============================================================
+
+  function startMorningReading() {
+
+    morningReadingCount = 1;
+
+    updateMorningReadingScreen();
+
+    showScreen(
+      "morningReadingScreen"
+    );
+
+  }
+
+
+  function continueMorningReading() {
+
+    if (morningReadingCount < 3) {
+
+      morningReadingCount++;
+
+      updateMorningReadingScreen();
+
+      showScreen(
+        "morningReadingScreen"
+      );
+
+      return;
+
+    }
+
+
+    morningReadingCount = 0;
+
+    showHome();
+
+  }
+
+
+  function updateMorningReadingScreen() {
+
+    document.getElementById(
+      "morningReadingCount"
+    ).textContent =
+      "Lesen " +
+      morningReadingCount +
+      " von 3";
+
   }
 
 
@@ -970,65 +1424,185 @@
   // ============================================================
 
   async function openEvening() {
+
     await loadTodayData();
 
-    document.getElementById("eveningDate").textContent =
+
+    document.getElementById(
+      "eveningDate"
+    ).textContent =
       getFormattedDate();
 
-    if (todayData && todayData.evening_done) {
+
+    if (
+      todayData &&
+      todayData.evening_done
+    ) {
+
+      await updateAllCounters();
+
       updateCompletionCounters();
-      showScreen("eveningCompleteScreen");
+
+      showScreen(
+        "eveningCompleteScreen"
+      );
+
       return;
+
     }
+
 
     selectedGoalCompleted = null;
     selectedNegativeHabitAvoided = null;
 
-    showScreen("eveningGoalScreen");
+
+    showScreen(
+      "eveningGoalScreen"
+    );
+
   }
 
 
   function selectGoalCompletion(value) {
-    selectedGoalCompleted = value;
+
+    selectedGoalCompleted =
+      value;
+
 
     if (value === true) {
-      showScreen("goalYesScreen");
+
+      showScreen(
+        "goalYesScreen"
+      );
+
     } else {
-      showScreen("goalNoScreen");
+
+      showScreen(
+        "goalNoScreen"
+      );
+
     }
+
   }
 
 
   function showNegativeHabitQuestion() {
-    showScreen("negativeHabitScreen");
+
+    showScreen(
+      "negativeHabitScreen"
+    );
+
   }
 
 
   function selectNegativeHabit(value) {
-    selectedNegativeHabitAvoided = value;
+
+    selectedNegativeHabitAvoided =
+      value;
+
 
     if (value === true) {
-      showScreen("negativeHabitYesScreen");
+
+      showScreen(
+        "negativeHabitYesScreen"
+      );
+
     } else {
-      showScreen("negativeHabitNoScreen");
+
+      showScreen(
+        "negativeHabitNoScreen"
+      );
+
     }
+
   }
 
 
   async function finishEvening() {
-    const success = await updateToday({
-      goal_completed: selectedGoalCompleted,
-      negative_habit_avoided: selectedNegativeHabitAvoided,
-      evening_done: true
-    });
 
-    if (!success) return;
+    const success =
+      await updateToday({
+
+        goal_completed:
+          selectedGoalCompleted,
+
+        negative_habit_avoided:
+          selectedNegativeHabitAvoided,
+
+        evening_done: true
+
+      });
+
+
+    if (!success) {
+      return;
+    }
+
 
     await loadTodayData();
+
     await updateAllCounters();
+
     updateCompletionCounters();
 
-    showScreen("eveningCompleteScreen");
+
+    showScreen(
+      "eveningCompleteScreen"
+    );
+
+  }
+
+
+  // ============================================================
+  // EVENING READING - 3 MAL
+  // ============================================================
+
+  function startEveningReading() {
+
+    eveningReadingCount = 1;
+
+    updateEveningReadingScreen();
+
+    showScreen(
+      "eveningReadingScreen"
+    );
+
+  }
+
+
+  function continueEveningReading() {
+
+    if (eveningReadingCount < 3) {
+
+      eveningReadingCount++;
+
+      updateEveningReadingScreen();
+
+      showScreen(
+        "eveningReadingScreen"
+      );
+
+      return;
+
+    }
+
+
+    eveningReadingCount = 0;
+
+    showHome();
+
+  }
+
+
+  function updateEveningReadingScreen() {
+
+    document.getElementById(
+      "eveningReadingCount"
+    ).textContent =
+      "Lesen " +
+      eveningReadingCount +
+      " von 3";
+
   }
 
 
@@ -1037,110 +1611,239 @@
   // ============================================================
 
   async function calculateRoutineCounter() {
-    if (!currentUser) return 0;
 
-    const { data, error } = await supabaseClient
+    if (!currentUser) {
+      return 0;
+    }
+
+
+    const {
+      data,
+      error
+    } = await supabaseClient
       .from("routine_days")
-      .select("date, morning_done, evening_done")
-      .eq("user_id", currentUser.id)
-      .eq("morning_done", true)
-      .eq("evening_done", true)
-      .order("date", { ascending: false });
+      .select(
+        "date, morning_done, evening_done"
+      )
+      .eq(
+        "user_id",
+        currentUser.id
+      )
+      .eq(
+        "morning_done",
+        true
+      )
+      .eq(
+        "evening_done",
+        true
+      )
+      .order(
+        "date",
+        { ascending: false }
+      );
+
 
     if (error) {
-      console.error("Counter-Fehler:", error);
+
+      console.error(
+        "Counter-Fehler:",
+        error
+      );
+
       return 0;
+
     }
 
-    if (!data || data.length === 0) {
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+
       return 0;
+
     }
+
 
     let streak = 0;
 
-    const today = new Date(getTodayString() + "T00:00:00");
 
-    const firstDate = new Date(data[0].date + "T00:00:00");
+    const today =
+      new Date(
+        getTodayString() +
+        "T00:00:00"
+      );
+
+
+    const firstDate =
+      new Date(
+        data[0].date +
+        "T00:00:00"
+      );
+
 
     const firstDifference =
       Math.round(
-        (today - firstDate) / (1000 * 60 * 60 * 24)
+        (
+          today -
+          firstDate
+        ) /
+        (1000 * 60 * 60 * 24)
       );
 
-    // Wenn der letzte vollständige Tag länger als gestern zurückliegt,
-    // ist die aktuelle Serie beendet.
-    if (firstDifference > 1) {
+
+    /*
+      Wenn der letzte vollständig
+      abgeschlossene Tag länger als
+      gestern zurückliegt, ist die
+      aktuelle Serie beendet.
+    */
+
+    if (
+      firstDifference > 1
+    ) {
+
       return 0;
+
     }
 
-    for (let i = 0; i < data.length; i++) {
+
+    for (
+      let i = 0;
+      i < data.length;
+      i++
+    ) {
+
       const currentDate =
-        new Date(data[i].date + "T00:00:00");
+        new Date(
+          data[i].date +
+          "T00:00:00"
+        );
+
 
       if (i === 0) {
+
         streak = 1;
+
         continue;
+
       }
 
+
       const previousDate =
-        new Date(data[i - 1].date + "T00:00:00");
+        new Date(
+          data[i - 1].date +
+          "T00:00:00"
+        );
+
 
       const difference =
         Math.round(
-          (previousDate - currentDate) /
+          (
+            previousDate -
+            currentDate
+          ) /
           (1000 * 60 * 60 * 24)
         );
 
+
       if (difference === 1) {
+
         streak++;
+
       } else {
+
         break;
+
       }
+
     }
 
+
     return streak;
+
   }
 
 
   async function updateAllCounters() {
-    const counter = await calculateRoutineCounter();
 
-    document.getElementById("counterNumber").textContent =
+    const counter =
+      await calculateRoutineCounter();
+
+
+    document.getElementById(
+      "counterNumber"
+    ).textContent =
       counter;
 
-    document.getElementById("morningCounter").textContent =
+
+    document.getElementById(
+      "morningCounter"
+    ).textContent =
       counter;
 
-    document.getElementById("eveningCounter").textContent =
+
+    document.getElementById(
+      "eveningCounter"
+    ).textContent =
       counter;
+
 
     return counter;
+
   }
 
 
   function updateCompletionCounters() {
+
     const number =
-      document.getElementById("counterNumber").textContent;
+      document.getElementById(
+        "counterNumber"
+      ).textContent;
 
-    document.getElementById("morningCounter").textContent =
+
+    document.getElementById(
+      "morningCounter"
+    ).textContent =
       number;
 
-    document.getElementById("eveningCounter").textContent =
+
+    document.getElementById(
+      "eveningCounter"
+    ).textContent =
       number;
+
   }
 
 
   // ============================================================
-  // SECURITY / HTML
+  // HTML SECURITY
   // ============================================================
 
   function escapeHtml(value) {
+
     return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
   }
 
 </script>
